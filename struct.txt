@@ -1,0 +1,14 @@
+├── src/                   # Código fonte
+│   ├── __init__.py       # Torna src um pacote Python
+│   ├── main.py           # Ponto de entrada principal
+│   ├── game.py           # Classe principal do jogo
+│   ├── player.py         # Classe do pássaro/personagem
+│   ├── obstacles.py      # Classes para os canos/obstáculos
+│   ├── collectibles.py   # Itens coletáveis (vidas, power-ups)
+│   ├── renderer.py       # Renderização OpenGL
+│   ├── texture.py        # Gerenciamento de texturas
+│   ├── physics.py        # Colisões e física básica
+│   └── ui.py             # Interface (pontuação, vidas)
+│
+├── README.md             # Documentação do projeto
+└── requirements.txt      # Dependências do projeto
