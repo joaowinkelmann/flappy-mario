@@ -47,11 +47,11 @@ class Collectible:
 
 
 class CollectibleManager:
-    def __init__(self):
+    def __init__(self, speed=0.5, spawn_interval=5.0):
         self.collectibles = []
         self.spawn_timer = 0
-        self.spawn_interval = 5.0  # Intervalo entre novos itens
-        self.speed = 0.5
+        self.spawn_interval = spawn_interval  # Intervalo entre novos itens
+        self.speed = speed  # Velocidade dos itens (geralmente igual à dos obstáculos)
     
     def update(self, delta_time):
         # Atualizar timer para spawn de novos itens

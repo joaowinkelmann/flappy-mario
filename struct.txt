@@ -8,7 +8,9 @@
 │   ├── renderer.py       # Renderização OpenGL
 │   ├── texture.py        # Gerenciamento de texturas
 │   ├── physics.py        # Colisões e física básica
-│   └── ui.py             # Interface (pontuação, vidas)
+│   ├── ui.py             # Interface (pontuação, vidas, debug)
+│   ├── view.py           # Telas de Título e Game Over
+│   └── text_helper.py    # Classe auxiliar para renderizar texto
 │
 ├── README.md             # Documentação do projeto
 └── requirements.txt      # Dependências do projeto

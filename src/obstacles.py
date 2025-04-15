@@ -3,11 +3,11 @@ import numpy as np
 from OpenGL.GL import *
 
 class Obstacle:
-    def __init__(self, x, gap_y, gap_size):
+    def __init__(self, x, gap_center, gap_size, obstacle_width):
         self.x = x  # Posição horizontal
-        self.gap_y = gap_y  # Posição vertical do centro do gap
+        self.gap_center = gap_center  # Posição vertical do centro do gap
         self.gap_size = gap_size  # Tamanho da abertura
-        self.width = 0.1
+        self.obstacle_width = obstacle_width
         self.passed = False  # Flag para verificar se o jogador já passou
     
     def update(self, delta_time, speed):
@@ -18,15 +18,15 @@ class Obstacle:
         # Retorna os limites dos tubos superior e inferior
         return {
             'top_pipe': {
-                'left': self.x - self.width/2,
-                'right': self.x + self.width/2,
+                'left': self.x - self.obstacle_width/2,
+                'right': self.x + self.obstacle_width/2,
                 'top': 1.0,
-                'bottom': self.gap_y + self.gap_size/2
+                'bottom': self.gap_center + self.gap_size/2
             },
             'bottom_pipe': {
-                'left': self.x - self.width/2,
-                'right': self.x + self.width/2,
-                'top': self.gap_y - self.gap_size/2,
+                'left': self.x - self.obstacle_width/2,
+                'right': self.x + self.obstacle_width/2,
+                'top': self.gap_center - self.gap_size/2,
                 'bottom': -1.0
             }
         }
@@ -63,11 +63,13 @@ class Obstacle:
 
 
 class ObstacleManager:
-    def __init__(self):
+    def __init__(self, speed=0.5, spawn_interval=2.0, gap_size=0.3, obstacle_width=0.1):
         self.obstacles = []
         self.spawn_timer = 0
-        self.spawn_interval = 2.0  # Intervalo entre novos obstáculos
-        self.speed = 0.5  # Velocidade base
+        self.spawn_interval = spawn_interval  # Intervalo entre novos obstáculos
+        self.speed = speed  # Velocidade base
+        self.gap_size = gap_size  # Tamanho da abertura entre os tubos
+        self.obstacle_width = obstacle_width  # Largura dos obstáculos
     
     def update(self, delta_time):
         # Atualizar timer para spawn de novos obstáculos
@@ -81,14 +83,13 @@ class ObstacleManager:
             obstacle.update(delta_time, self.speed)
             
             # Remover obstáculos que saíram da tela
-            if obstacle.x < -2:
+            if obstacle.x < -1.5:
                 self.obstacles.remove(obstacle)
     
     def spawn_obstacle(self):
         # Criar novo obstáculo
-        gap_y = random.uniform(-0.3, 0.3)
-        gap_size = 0.3
-        new_obstacle = Obstacle(1.2, gap_y, gap_size)
+        gap_center = random.uniform(-0.3, 0.3)
+        new_obstacle = Obstacle(1.2, gap_center, self.gap_size, self.obstacle_width)
         self.obstacles.append(new_obstacle)
     
     def check_collision(self, player):

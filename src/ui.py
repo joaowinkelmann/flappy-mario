@@ -1,46 +1,53 @@
-from OpenGL.GL import *
-from OpenGL.GLUT import *
+from src.text_helper import TextHelper
 
 class UI:
+    def __init__(self, game_font, width, height):
+        # Instanciar o helper de texto
+        self.text_helper = TextHelper(game_font, width, height)
+        self.current_debug_height = 0
+        self.debug_line_height = 20
+        self.width = width
+        self.height = height
+
     def render(self, score, lives):
+        # a cada frame, reseta a altura do texto do debug
+        self.reset_debug_height()
+        
+        # atualiza as dimensões da janela caso tenha mudado
+        self.width = self.text_helper.window_width
+        self.height = self.text_helper.window_height
+        
         # Renderizar pontuação e vidas
         self.render_score(score)
         self.render_lives(lives)
-    
+
     def render_score(self, score):
-        # Renderizar pontuação no canto superior
-        glColor3f(1.0, 1.0, 1.0)  # Branco
-        
-        # Na implementação real, renderizaríamos texto
-        # Por enquanto, apenas desenharemos um indicador
-        glPushMatrix()
-        glTranslatef(0.8, 0.9, 0)
-        
-        # Desenhar um pequeno quadrado para cada ponto
-        for i in range(min(score, 10)):
-            glBegin(GL_QUADS)
-            glVertex2f(-0.01 + i*0.02, -0.01)
-            glVertex2f(0.01 + i*0.02, -0.01)
-            glVertex2f(0.01 + i*0.02, 0.01)
-            glVertex2f(-0.01 + i*0.02, 0.01)
-            glEnd()
-            
-        glPopMatrix()
-    
+        # Renderizar pontuação no canto superior direito
+        x = int(self.width * 0.80)
+        y = int(self.height * 0.90)
+        self.text_helper.render_text(f"Score: {score}", x, y, color=(1.0, 1.0, 1.0))
+
     def render_lives(self, lives):
         # Renderizar vidas no canto superior esquerdo
-        glColor3f(1.0, 0.0, 0.0)  # Vermelho
+        x = int(self.width * 0.10)
+        y = int(self.height * 0.90) 
+        self.text_helper.render_text(f"Lives: {lives}", x, y, color=(1.0, 0.0, 0.0)) # Red lives text
+
+    # Reseta a altura do texto de debug para o próximo frame
+    def reset_debug_height(self):
+        self.current_debug_height = 0
+
+    # Ativa com o F3
+    def render_debug(self, debug_info):
+        base_y = int(self.height * 0.02)
         
-        glPushMatrix()
-        glTranslatef(-0.9, 0.9, 0)
+        # Renderiza o texto baseado na altura atual
+        self.text_helper.render_text(
+            debug_info, 
+            int(self.width * 0.02),
+            base_y + self.current_debug_height,
+            color=(1.0, 1.0, 1.0)
+        )
         
-        # Desenhar um pequeno coração para cada vida
-        for i in range(lives):
-            glBegin(GL_TRIANGLES)
-            # Forma simplificada de coração
-            glVertex2f(0.00 + i*0.05, 0.00)
-            glVertex2f(-0.02 + i*0.05, 0.02)
-            glVertex2f(0.02 + i*0.05, 0.02)
-            glEnd()
-            
-        glPopMatrix()
+        # incrementa para a próxima linha
+        self.current_debug_height += self.debug_line_height

@@ -1,4 +1,6 @@
-# Trabalho de computação gráfica
+# Flappy Bird com OpenGL
+
+Implementação do jogo Flappy Bird usando PyOpenGL para a disciplina de Computação Gráfica.
 
 ## Requisitos
 
@@ -21,5 +23,35 @@
 - A entrega do trabalho deverá ser feita enviando os arquivos do projeto no ambiente virtual e compartilhando um link do github que conste todo o código fonte, uma explicação do projeto e algumas telas do jogo: 1+.0 ponto
 - Apresentação do trabalho: 3.0 pontos
 
-## Dicas
 
+## Funcionalidades
+
+- Personagem que voa com a tecla ESPAÇO
+- Obstáculos em movimento
+- Tratamento de colisões
+- Contador de obstáculos ultrapassados
+- Sistema de vidas
+- Itens coletáveis aleatórios
+
+## Como executar
+
+1. Ter Python instalado.
+
+2. Instale as dependências:
+```bash
+sudo apt-get install freeglut3-dev
+```
+
+3. Instalar as dependências com pip
+```bash
+pip install -r requirements.txt
+```
+
+4. Execute o jogo:
+```bash
+python main.py
+```
+OU
+```bash
+python3 main.py
+```
