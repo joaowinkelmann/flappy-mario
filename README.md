@@ -2,6 +2,11 @@
 
 Implementação do jogo Flappy Bird usando PyOpenGL para a disciplina de Computação Gráfica.
 
+# Screenshots
+
+![Gameplay](screenshots/v0.4/game_over.png)
+![Game-over](screenshots/v0.4/game_over.png)
+
 ## Requisitos
 
 
