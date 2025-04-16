@@ -6,8 +6,6 @@ from src.game import Game
 
 # Constatntes e Configurações do Jogo
 
-DEBUG = False
-
 # Configurações de janela
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
@@ -57,7 +55,6 @@ def main():
 
     # Criar instância do jogo
     game = Game(window=window,
-                debug=DEBUG,
                 game_font=GLUT_ACTIVE_FONT,
                 gravity=GRAVITY,
                 flap_force=FLAP_FORCE, 
@@ -71,7 +68,8 @@ def main():
                 initial_lives=INITIAL_LIVES,
                 player_size=PLAYER_SIZE,
                 player_x_pos=PLAYER_X_POS,
-                player_start_y=PLAYER_START_Y)
+                player_start_y=PLAYER_START_Y,
+                )
 
     # Loop principal
     game.run()

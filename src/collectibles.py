@@ -7,7 +7,7 @@ class Collectible:
         self.y = y
         self.width = 0.05
         self.height = 0.05
-        self.item_type = item_type  # "extra_life", "speed_boost", etc.
+        self.item_type = item_type
         self.collected = False
     
     def update(self, delta_time, speed):
@@ -50,8 +50,12 @@ class CollectibleManager:
     def __init__(self, speed=0.5, spawn_interval=5.0):
         self.collectibles = []
         self.spawn_timer = 0
-        self.spawn_interval = spawn_interval  # Intervalo entre novos itens
-        self.speed = speed  # Velocidade dos itens (geralmente igual à dos obstáculos)
+        self.spawn_interval = spawn_interval # Intervalo entre novos itens
+        self.speed = speed # Velocidade dos itens (geralmente igual à dos obstáculos)
+        self.obstacle_manager = None # check de colisão
+
+    def set_obstacle_manager(self, obstacle_manager):
+        self.obstacle_manager = obstacle_manager
     
     def update(self, delta_time):
         # Atualizar timer para spawn de novos itens
@@ -67,6 +71,39 @@ class CollectibleManager:
             # Remover itens que saíram da tela ou foram coletados
             if item.x < -1.5 or item.collected:
                 self.collectibles.remove(item)
+
+
+    def is_position_valid(self, x, y, width, height):
+        if self.obstacle_manager is None:
+            return True # deu ruim pq era pra ter, mas retorna true, azar
+        
+        # margem de segurança
+        item_bounds = {
+            'left': x - width/2,
+            'right': x + width/2,
+            'top': y + height/2,
+            'bottom': y - height/2
+        }
+        
+        # checa se o item colide com os obstáculos
+        for obstacle in self.obstacle_manager.obstacles:
+            obstacle_bounds = obstacle.get_bounds()
+            
+            top_pipe = obstacle_bounds['top_pipe']
+            if (item_bounds['right'] > top_pipe['left'] and
+                item_bounds['left'] < top_pipe['right'] and
+                item_bounds['top'] > top_pipe['bottom'] and
+                item_bounds['bottom'] < top_pipe['top']):
+                return False
+            
+            bottom_pipe = obstacle_bounds['bottom_pipe']
+            if (item_bounds['right'] > bottom_pipe['left'] and
+                item_bounds['left'] < bottom_pipe['right'] and
+                item_bounds['top'] > bottom_pipe['bottom'] and
+                item_bounds['bottom'] < bottom_pipe['top']):
+                return False
+        
+        return True
     
     def spawn_collectible(self):
         # Chance de 50% de spawnar um item
@@ -74,15 +111,22 @@ class CollectibleManager:
             return
             
         # Criar novo item aleatório
-        x = 1.2
-        y = random.uniform(-0.8, 0.8)
+        pos_x = 1.2
         
-        # Selecionar tipo aleatório
-        item_types = ["extra_life", "speed_boost"]
-        item_type = random.choice(item_types)
+        item_width = 0.05
+        item_height = 0.05
         
-        new_item = Collectible(x, y, item_type)
-        self.collectibles.append(new_item)
+        pos_y = random.uniform(-0.8, 0.8)
+
+        # verifica colisão com os pipes
+        if self.is_position_valid(pos_x, pos_y, item_width, item_height):
+            # Selecionar tipo aleatório
+            item_types = ["extra_life", "speed_boost", "invincibility"]
+            item_type = random.choice(item_types)
+            
+            new_item = Collectible(pos_x, pos_y, item_type)
+            self.collectibles.append(new_item)
+            return
     
     def check_collection(self, player):
         # Verificar colisão com todos os itens

@@ -22,6 +22,7 @@ class Player:
         # Estado
         self.alive = True
         self.speed_multiplier = 1.0
+        self.intangible = False
     
     def update(self, delta_time):
         # Aplicar gravidade
@@ -41,6 +42,20 @@ class Player:
         elif self.y > 1.0 - self.height:
             self.y = 1.0 - self.height
             self.velocity = 0
+            
+        # Atualiza os timers de power-ups
+        self.update_timers(delta_time)
+    
+    def update_timers(self, delta_time):
+        if self.intangible:
+            self.intangible_timer -= delta_time
+            if self.intangible_timer <= 0:
+                self.intangible = False
+                self.intangible_timer = 0
+    
+    def activate_intangibility(self, duration=5.0):
+        self.intangible = True
+        self.intangible_timer = duration
     
     def flap(self):
         # Salto quando pressiona espaço
@@ -58,7 +73,6 @@ class Player:
     def boost_speed(self):
         # Ativa power-up de velocidade
         self.speed_multiplier = 1.5
-        # (Na implementação real, adicionaríamos um timer)
     
     def reset_position(self):
         # Resetar posição após perder uma vida
@@ -67,4 +81,4 @@ class Player:
     
     def render(self, renderer):
         # Chamada para renderizar o jogador
-        renderer.render_player(self.x, self.y, self.width, self.height)
+        renderer.render_player(self.x, self.y, self.width, self.height, self.intangible)

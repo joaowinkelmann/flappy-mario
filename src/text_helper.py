@@ -42,15 +42,16 @@ class TextHelper:
                 else:
                     print("glutBitmapCharacter nao disponível.")
             except Exception as e:
-                print(f"Error testing GLUT bitmap: {e}")
+                print(f"Erro ao testar bitmap GLUT: {e}")
                 print("glutBitmapCharacter nao disponível.")
                 
         except Exception as e:
             print(f"Erro ao inicializar GLUT: {e}")
             return False
 
-    # Renderiza texto na tela usando GLUT
     def render_text(self, text, x, y, font=None, color=(1.0, 1.0, 1.0)):
+        if not text:
+            return
             
         # Define a projeção e modelo de matriz
         glMatrixMode(GL_PROJECTION)
@@ -62,7 +63,7 @@ class TextHelper:
             if current_context:
                 self.window_width, self.window_height = glfw.get_window_size(current_context)
         except:
-            pass 
+            pass
         
         glOrtho(0, self.window_width, 0, self.window_height, -1, 1)
         
@@ -88,6 +89,9 @@ class TextHelper:
 
     def _render_text_glut(self, text, x, y, font=None):
         try:
+            if not isinstance(text, str):
+                text = str(text)
+                
             # Posição do texto recebida por parametro
             glRasterPos2f(x, y)
 

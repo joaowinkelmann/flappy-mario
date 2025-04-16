@@ -1,6 +1,7 @@
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import numpy as np
+import time
 
 class Renderer:
     def __init__(self):
@@ -9,12 +10,6 @@ class Renderer:
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         
-        
-        # TODO
-        # # Gerenciador de texturas
-        # self.texture_manager = TextureManager()
-        # self.texture_manager.load_textures()
-    
     def render_background(self):
         # Renderizar o fundo do jogo
         glMatrixMode(GL_PROJECTION)
@@ -42,9 +37,16 @@ class Renderer:
         glVertex2f(-1, -0.8)
         glEnd()
     
-    def render_player(self, x, y, width, height):
-        # Renderizar o jogador (pássaro)
-        glColor3f(1.0, 1.0, 0.0)  # Amarelo
+    def render_player(self, x, y, width, height, intangible):
+
+        # se ta intangível, mostra visualmente
+        if intangible:
+            # traz a bebida que pisca
+            pulso = 0.7 + 0.3 * abs(np.sin(time.time() * 5.0))
+            glColor4f(1.0, 1.0, pulso, 0.7)  # Amarelo piscando
+        else:
+            # Renderizar o jogador (pássaro)
+            glColor3f(1.0, 1.0, 0.0)  # Amarelo
         
         glPushMatrix()
         glTranslatef(x, y, 0)
@@ -89,6 +91,8 @@ class Renderer:
             glColor3f(1.0, 0.0, 0.0)  # Vermelho para vida extra
         elif collectible.item_type == "speed_boost":
             glColor3f(0.0, 0.0, 1.0)  # Azul para boost de velocidade
+        elif collectible.item_type == "invincibility":
+            glColor3f(1.0, 0.5, 0.0) # Laranja para invencibilidade
         else:
             glColor3f(1.0, 1.0, 1.0)  # Branco para outros itens
         
