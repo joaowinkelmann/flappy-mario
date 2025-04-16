@@ -17,12 +17,12 @@ GAME_OVER = 2
 DIFF_SELECT = 3 # TODO: Implementar
 
 class Game:
-    def __init__(self, debug, window, game_font, gravity=-9.8, flap_force=5.0, terminal_velocity=-10.0,
+    def __init__(self, window, game_font, gravity=-9.8, flap_force=5.0, terminal_velocity=-10.0,
                 obstacle_speed=0.5, obstacle_spawn_interval=2.0, obstacle_gap_size=0.3, obstacle_width=0.1,
                 collectible_spawn_interval=5.0, collectible_speed=0.5, initial_lives=3, player_size=0.05,
                 player_x_pos=0.3, player_start_y=0.5):
         
-        self.debug = debug
+        self.debug = False
         self.window = window
         self.width, self.height = glfw.get_window_size(window)
 
@@ -48,7 +48,6 @@ class Game:
             'player_size': player_size,
             'player_x_pos': player_x_pos,
             'player_start_y': player_start_y,
-            'debug': debug,
             'initial_lives': initial_lives
         }
 
@@ -78,6 +77,8 @@ class Game:
             speed=self.config['collectible_speed'],
             spawn_interval=self.config['collectible_spawn_interval']
         )
+        # referncia o gerenciador de canos no gerenciador de coletáveis para fazer check de colisão
+        self.collectible_manager.set_obstacle_manager(self.obstacle_manager)
         
         self.ui = UI(game_font, self.width, self.height)
         self.view = View(game_font, self.width, self.height)
@@ -119,7 +120,7 @@ class Game:
         self.score = 0
         self.lives = self.config['initial_lives']
         self.player.reset_position()
-        self.player.alive = True # Força o jogador a estar vivo
+        self.player.alive = True
         self.obstacle_manager = ObstacleManager(
             speed=self.config['obstacle_speed'],
             spawn_interval=self.config['obstacle_spawn_interval'],
@@ -160,6 +161,11 @@ class Game:
 
     def check_collisions(self):
         # Verificar colisão com obstáculos
+
+        # se o player ta intangível, ja sai
+        if self.player.intangible:
+            return
+
         if self.obstacle_manager.check_collision(self.player):
             self.handle_death()
             return
@@ -184,6 +190,10 @@ class Game:
             self.lives += 1
         elif item_type == "speed_boost":
             self.player.boost_speed()
+        elif item_type == "invincibility":
+            # seta com timer pra voltar a ser tangível
+            self.player.activate_intangibility(duration=5.0)
+        # Outros efeitos podem ser adicionados
 
 
     def reset_player_position(self):
@@ -192,7 +202,6 @@ class Game:
         # Verificar: talvez deixar o player invencível
 
 
-    # Fim de jogo, mostra a tela de game over e muda os estados
     def game_over(self):
         self.state = GAME_OVER
         self.player.alive = False
@@ -221,12 +230,14 @@ class Game:
                   
                   if self.debug:
                     player_bounds = self.player.get_bounds()
-                    self.ui.render_debug(f"Player Bounds: {player_bounds}")
-                    self.ui.render_debug(f"Player Velocity: {self.player.velocity:.2f}")
-                    self.ui.render_debug(f"Player Position: {self.player.x:.2f}, {self.player.y:.2f}")
-                    # fps = self.delta_time > 0 ? 1.0 / self.delta_time : 0
+                    self.ui.render_debug(f"Bounds: {player_bounds}")
+                    self.ui.render_debug(f"Velocity: {self.player.velocity:.2f}")
+                    self.ui.render_debug(f"Pos: {self.player.x:.2f}, {self.player.y:.2f}")
                     fps = 1.0 / self.delta_time if self.delta_time > 0 else 0
                     self.ui.render_debug(f"FPS: {fps:.2f}")
+
+                    if self.player.intangible:
+                        self.ui.render_debug(f"Intangível: {self.player.intangible_timer:.1f}s")
 
                   self.ui.render(self.score, self.config['initial_lives'])
 
