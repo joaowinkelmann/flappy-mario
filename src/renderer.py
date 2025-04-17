@@ -6,7 +6,7 @@ import time
 class Renderer:
     def __init__(self):
         # Inicializar OpenGL
-        glClearColor(0.5, 0.7, 1.0, 1.0)
+        glClearColor(0.5, 0.7, 1.0, 1.0)  # Fundo azul celeste
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         
@@ -42,8 +42,25 @@ class Renderer:
         # se ta intangível, mostra visualmente
         if intangible:
             # traz a bebida que pisca
-            pulso = 0.7 + 0.3 * abs(np.sin(time.time() * 5.0))
-            glColor4f(1.0, 1.0, pulso, 0.7)  # Amarelo piscando
+            pulse_time = time.time() * 8.0  # Oscilação
+            alpha_pulse = 0.4 + 0.6 * abs(np.sin(pulse_time))
+            color_pulse = 0.5 + 0.5 * abs(np.sin(pulse_time))
+            
+            glow_size = 0.3
+            glColor4f(1.0, color_pulse, 0.0, alpha_pulse * 0.5)  # Amarelo piscando
+            
+            # Desenha o efeito de brilho
+            glPushMatrix()
+            glTranslatef(x, y, 0)
+            glBegin(GL_QUADS)
+            glVertex2f(-width/2 * (1 + glow_size), -height/2 * (1 + glow_size))
+            glVertex2f(width/2 * (1 + glow_size), -height/2 * (1 + glow_size))
+            glVertex2f(width/2 * (1 + glow_size), height/2 * (1 + glow_size))
+            glVertex2f(-width/2 * (1 + glow_size), height/2 * (1 + glow_size))
+            glEnd()
+            glPopMatrix()
+            
+            glColor4f(1.0, 1.0, color_pulse, alpha_pulse)
         else:
             # Renderizar o jogador (pássaro)
             glColor3f(1.0, 1.0, 0.0)  # Amarelo
