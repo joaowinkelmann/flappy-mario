@@ -23,6 +23,7 @@ class Player:
         self.alive = True
         self.speed_multiplier = 1.0
         self.intangible = False
+        self.speed_boost_active = False
     
     def update(self, delta_time):
         # Aplicar gravidade
@@ -47,11 +48,20 @@ class Player:
         self.update_timers(delta_time)
     
     def update_timers(self, delta_time):
+        # check do timer de intangibilidade
         if self.intangible:
             self.intangible_timer -= delta_time
             if self.intangible_timer <= 0:
                 self.intangible = False
                 self.intangible_timer = 0
+        
+        # check do timer de velocidade
+        if self.speed_boost_active:
+            self.speed_boost_timer -= delta_time
+            if self.speed_boost_timer <= 0:
+                self.speed_boost_active = False
+                self.speed_multiplier = 1.0
+                self.speed_boost_timer = 0
     
     def activate_intangibility(self, duration=5.0):
         self.intangible = True
@@ -70,9 +80,13 @@ class Player:
             'bottom': self.y - self.height/2
         }
     
-    def boost_speed(self):
+    def boost_speed(self, multiplier, duration=5.0):
         # Ativa power-up de velocidade
-        self.speed_multiplier = 1.5
+        self.speed_boost_active = True
+        # self.speed_multiplier = multiplier
+        # EXPERIMENTAL: se ja ta ativo, aumenta ainda mais a velocidade
+        self.speed_multiplier *= multiplier
+        self.speed_boost_timer = duration
     
     def reset_position(self):
         # Resetar posição após perder uma vida

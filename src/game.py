@@ -154,6 +154,19 @@ class Game:
         # Faz o check somente se o jogador está jogando
         if self.state == PLAYING:
             self.player.update(self.delta_time)
+            
+            # se ta com speed boost, atualiza a velocidade dos obstáculos e coletáveis
+            if self.player.speed_boost_active:
+                effective_speed = self.config['obstacle_speed'] * self.player.speed_multiplier
+                effective_collectible_speed = self.config['collectible_speed'] * self.player.speed_multiplier
+            else:
+                effective_speed = self.config['obstacle_speed']
+                effective_collectible_speed = self.config['collectible_speed']
+            
+            # atualiza a velocidade dos obstáculos e coletáveis
+            self.obstacle_manager.speed = effective_speed
+            self.collectible_manager.speed = effective_collectible_speed
+
             self.obstacle_manager.update(self.delta_time)
             self.collectible_manager.update(self.delta_time)
 
@@ -198,16 +211,18 @@ class Game:
             self.state = CONTINUE_SCREEN
             # para o passarinho
             self.player.velocity = 0
+            # fix: zera o boost do player
+            self.player.speed_multiplier = 1.0
 
     def apply_collectible_effect(self, item_type):
         # Aplicar efeito do item coletado
         if item_type == "extra_life":
             self.lives += 1
         elif item_type == "speed_boost":
-            self.player.boost_speed()
+            self.player.boost_speed(1.5, 5.0) # Aumenta a velocidade por 5 segundos
         elif item_type == "invincibility":
             # seta com timer pra voltar a ser tangível
-            self.player.activate_intangibility(duration=5.0)
+            self.player.activate_intangibility(5.0)
         # Outros efeitos podem ser adicionados
 
 
@@ -260,6 +275,8 @@ class Game:
 
                     if self.player.intangible:
                         self.ui.render_debug(f"Intangível: {self.player.intangible_timer:.1f}s")
+                    if self.player.speed_boost_active:
+                        self.ui.render_debug(f"Boost: {self.player.speed_boost_timer:.1f}s")
 
                   self.ui.render(self.score, self.lives)
              elif self.state == GAME_OVER:
