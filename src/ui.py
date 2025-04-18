@@ -31,7 +31,7 @@ class UI:
         # Renderizar vidas no canto superior esquerdo
         x = int(self.width * 0.10)
         y = int(self.height * 0.90) 
-        self.text_helper.render_text(f"Lives: {lives}", x, y, color=(1.0, 0.0, 0.0)) # Red lives text
+        self.text_helper.render_text(f"Lives: {lives}", x, y, color=(1.0, 0.0, 0.0))
 
     # Reseta a altura do texto de debug para o próximo frame
     def reset_debug_height(self):

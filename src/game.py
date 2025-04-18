@@ -1,7 +1,6 @@
 import glfw
 import time
 from OpenGL.GL import *
-import numpy as np
 
 from src.player import Player
 from src.obstacles import ObstacleManager

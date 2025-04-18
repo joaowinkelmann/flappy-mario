@@ -24,13 +24,12 @@ class TextHelper:
             # Tenta importar o GLUT e inicializar
             args = sys.argv if hasattr(sys, 'argv') else []
             glutInit(args)
-            print("GLUT inicializado com sucesso")
+            # print("GLUT inicializado com sucesso")
             
             # Testando funções bitmap
             try:
                 # Verfica se da pra chamar essa função
                 if callable(glutBitmapCharacter):
-                    print("glutBitmapCharacter is callable.")
                     font = self.active_glut_font
                     if font is not None:
                         self.can_render_text = True

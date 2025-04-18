@@ -4,16 +4,20 @@ Implementação do jogo Flappy Bird usando PyOpenGL para a disciplina de Computa
 
 # Screenshots
 
+#### Versão v0.4
+
 ![Gameplay](screenshots/v0.4/game_over.png)
 ![Game-over](screenshots/v0.4/gameplay.png)
+
+#### Versão v0.5
 
 ![Gameplay](screenshots/v0.5/game_over.png)
 ![Game-over](screenshots/v0.5/gameplay.png)
 
-## Requisitos
+# Requisitos
+- Deve ser feito na linguagem Python
 
-
-## Bibliotecas permitidas
+## Será permitido utilizar somente as seguintes bibliotecas:
 - PyOpenGL_accelerate
 - glfw
 - Pillow (PIL)
@@ -21,7 +25,9 @@ Implementação do jogo Flappy Bird usando PyOpenGL para a disciplina de Computa
 - numpy
 - random
 
-## Critérios de avaliação
+---
+
+# Critérios de avaliação
 - Fazer o personagem voar apertando a tecla ESPAÇO: 1.0 pontos
 - Fazer os obstáculos e personagem se movimentarem: 1.0 pontos
 - Realizar o tratamento de colisão: 1.0 pontos
@@ -31,8 +37,18 @@ Implementação do jogo Flappy Bird usando PyOpenGL para a disciplina de Computa
 - A entrega do trabalho deverá ser feita enviando os arquivos do projeto no ambiente virtual e compartilhando um link do github que conste todo o código fonte, uma explicação do projeto e algumas telas do jogo: 1+.0 ponto
 - Apresentação do trabalho: 3.0 pontos
 
+---
 
-## Funcionalidades
+- Na apresentação todos devem falar, será feito perguntas específicas
+para cada integrante do grupo. Será descontado pontos da nota do
+trabalho caso algum integrante não responda adequadamente às
+perguntas
+- Devem ser utilizados os comandos vistos em aula, podem ser
+utilizados comandos adicionais. Atenção! Se a estrutura do programa
+for diferente do que foi visto em aula, será descontado pontos
+
+
+# Funcionalidades
 
 - Personagem que voa com a tecla ESPAÇO
 - Obstáculos em movimento
@@ -41,11 +57,28 @@ Implementação do jogo Flappy Bird usando PyOpenGL para a disciplina de Computa
 - Sistema de vidas
 - Itens coletáveis aleatórios
 
+# Dicas
+- Podem personalizar os personagens e obstáculos, usem a criatividade!
+- Tanto o personagem quanto os obstáculos podem ser representados
+por qualquer primitiva geométrica
+- Fiquem livre para criar conceitos de vida, condição para terminar o jogo,
+pontuação, ranking, etc
+- Pode ser feito tanto no ambiente 2D quanto no 3D
+- Utilizem a variável de tempo para controlar os movimentos das
+primitivas
+- Fiquem livres para criar múltiplas classes ou arquivos para o projeto
+- Utilizem vetores para armazenar as posições
+- Definam variáveis públicas para determinar o tamanho dos sprites,
+range de colisão, velocidade, etc
+
 ## Como executar
 
-1. Ter Python instalado.
+1. Ter Python instalado. (Python 3.12.3 recomendado)
+```bash
+python --version
+```
 
-2. Instale as dependências:
+2. Instale as dependências para utilizar o GLUT:
 ```bash
 sudo apt-get install freeglut3-dev
 ```
