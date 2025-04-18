@@ -14,6 +14,7 @@ TITLE = 0
 PLAYING = 1
 GAME_OVER = 2
 DIFF_SELECT = 3 # TODO: Implementar
+CONTINUE_SCREEN = 4
 
 class Game:
     def __init__(self, window, game_font, gravity=-9.8, flap_force=5.0, terminal_velocity=-10.0,
@@ -89,11 +90,16 @@ class Game:
     def key_callback(self, window, key, scancode, action, mods):
         # Tratar entrada do teclado baseado no estado do jogo
         if action == glfw.PRESS:
-            if key == glfw.KEY_ESCAPE:
-                self.running = False # Se apertar ESC, fecha o jogo
             if key == glfw.KEY_F3: # Modo debug
                 # faz o toggle
                 self.debug = not self.debug
+
+            if key == glfw.KEY_ESCAPE:
+                if self.state == CONTINUE_SCREEN:
+                    # se ta no continue, game over
+                    self.game_over()
+                else:
+                    self.running = False # sai do jogo
 
             if self.state == TITLE:
                 if key == glfw.KEY_SPACE:
@@ -101,6 +107,9 @@ class Game:
             elif self.state == PLAYING:
                 if key == glfw.KEY_SPACE:
                     self.player.flap()
+            elif self.state == CONTINUE_SCREEN:
+                if key == glfw.KEY_SPACE:
+                    self.continue_game()
             elif self.state == GAME_OVER:
                 if key == glfw.KEY_R:
                     self.restart_game()
@@ -130,6 +139,8 @@ class Game:
             speed=self.config['collectible_speed'],
             spawn_interval=self.config['collectible_spawn_interval']
         )
+        # fix: seta o gerenciador de obstáculos no reset tbm
+        self.collectible_manager.set_obstacle_manager(self.obstacle_manager)
         self.state = PLAYING
         self.last_time = time.time() # Reinicia o timer do jogo
 
@@ -177,11 +188,16 @@ class Game:
 
     # Cuida dos eventos após a morte do jogador
     def handle_death(self):
-         self.lives -= 1
-         if self.lives <= 0:
-             self.game_over()
-         else:
-             self.reset_player_position() # Reseta a posição do player
+        self.lives -= 1
+        
+        # Pausa o jogo e mostra a tela de continue
+        if self.lives <= 0:
+            self.game_over()
+        else:
+            # chama a tela de continue
+            self.state = CONTINUE_SCREEN
+            # para o passarinho
+            self.player.velocity = 0
 
     def apply_collectible_effect(self, item_type):
         # Aplicar efeito do item coletado
@@ -207,10 +223,17 @@ class Game:
         print(f"Game Over! Score: {self.score}")
 
 
+    def continue_game(self):
+        # continua o jogo depois de perder uma das vidas
+        # reseta a posição e da uma invencibilidade
+        self.reset_player_position()
+        self.player.activate_intangibility(duration=2.0)
+        self.state = PLAYING
+        self.last_time = time.time()
+
     # Renderiza os elementos do jogo, baseando-se nos estados
     def render(self):
         if self.state == TITLE:
-             # Puxa a tela de título
              self.view.render_title_screen()
         else:
              # Limpa a tela e reinicia a cor de fundo
@@ -238,11 +261,13 @@ class Game:
                     if self.player.intangible:
                         self.ui.render_debug(f"Intangível: {self.player.intangible_timer:.1f}s")
 
-                  self.ui.render(self.score, self.config['initial_lives'])
-
+                  self.ui.render(self.score, self.lives)
              elif self.state == GAME_OVER:
                   # Puxa a tela de game over
                   self.view.render_game_over_screen(self.score)
+             elif self.state == CONTINUE_SCREEN:
+                  # Puxa a tela de continue
+                  self.view.render_continue_screen(self.lives)
 
         # Trocar buffers
         glfw.swap_buffers(self.window)

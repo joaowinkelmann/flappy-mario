@@ -35,12 +35,12 @@ class Player:
         # Atualizar posição
         self.y += self.velocity * delta_time
         
-        # Limitar posição vertical (não sair da tela)
-        if self.y < -1.0 + self.height:
-            self.y = -1.0 + self.height
+        # corrigindo lógica de colisão, considerando a altura do personagem
+        if self.y < -1.0 + self.height/2:
+            self.y = -1.0 + self.height/2
             self.velocity = 0
-        elif self.y > 1.0 - self.height:
-            self.y = 1.0 - self.height
+        elif self.y > 1.0 - self.height/2:
+            self.y = 1.0 - self.height/2
             self.velocity = 0
             
         # Atualiza os timers de power-ups

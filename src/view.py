@@ -66,3 +66,36 @@ class View:
         self.text_helper.render_text(f"Score: {score}", score_x, score_y, color=(1.0, 1.0, 1.0))
         self.text_helper.render_text("Press R to Restart", restart_x, restart_y, color=(1.0, 1.0, 1.0))
         self.text_helper.render_text("Press ESC to Quit", quit_x, quit_y, color=(1.0, 1.0, 1.0))
+    
+    def render_continue_screen(self, lives):
+        self.width = self.text_helper.window_width
+        self.height = self.text_helper.window_height
+        
+        # Define a projeção e a matriz de modelo para renderizar o texto
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        glOrtho(-1, 1, -1, 1, -1, 1)
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
+
+        # Desenha um fundo semi-transparente
+        glColor4f(1.0, 1.0, 0.0, 0.2)
+        glBegin(GL_QUADS)
+        glVertex2f(-1, -1)
+        glVertex2f(1, -1)
+        glVertex2f(1, 1)
+        glVertex2f(-1, 1)
+        glEnd()
+        glColor4f(1.0, 1.0, 1.0, 1.0)
+
+        continue_x = int(self.width * 0.5 - 120)
+        continue_y = int(self.height * 0.6)
+        
+        lives_x = int(self.width * 0.5 - 60)
+        lives_y = int(self.height * 0.5)
+        
+        options_x = int(self.width * 0.5 - 130)
+        options_y = int(self.height * 0.4)
+
+        self.text_helper.render_text(f"Lives remaining: {lives}", lives_x, lives_y, color=(1.0, 1.0, 1.0))
+        self.text_helper.render_text("Press SPACE to continue or ESC to quit", options_x, options_y, color=(1.0, 1.0, 1.0))
