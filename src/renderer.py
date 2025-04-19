@@ -3,6 +3,8 @@ from OpenGL.GLU import *
 import numpy as np
 import time
 
+from src.texture import TextureManager
+
 class Renderer:
     def __init__(self):
         # Inicializar OpenGL
@@ -10,6 +12,10 @@ class Renderer:
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         
+        # Gerenciador de texturas
+        self.texture_manager = TextureManager()
+        self.texture_manager.load_textures()
+    
     def render_background(self):
         # Renderizar o fundo do jogo
         glMatrixMode(GL_PROJECTION)
@@ -38,69 +44,77 @@ class Renderer:
         glEnd()
     
     def render_player(self, x, y, width, height, intangible):
-
-        # se ta intangível, mostra visualmente
-        if intangible:
-            # traz a bebida que pisca
-            pulse_time = time.time() * 8.0  # Oscilação
-            alpha_pulse = 0.4 + 0.6 * abs(np.sin(pulse_time))
-            color_pulse = 0.5 + 0.5 * abs(np.sin(pulse_time))
-            
-            glow_size = 0.3
-            glColor4f(1.0, color_pulse, 0.0, alpha_pulse * 0.5)  # Amarelo piscando
-            
-            # Desenha o efeito de brilho
-            glPushMatrix()
-            glTranslatef(x, y, 0)
-            glBegin(GL_QUADS)
-            glVertex2f(-width/2 * (1 + glow_size), -height/2 * (1 + glow_size))
-            glVertex2f(width/2 * (1 + glow_size), -height/2 * (1 + glow_size))
-            glVertex2f(width/2 * (1 + glow_size), height/2 * (1 + glow_size))
-            glVertex2f(-width/2 * (1 + glow_size), height/2 * (1 + glow_size))
-            glEnd()
-            glPopMatrix()
-            
-            glColor4f(1.0, 1.0, color_pulse, alpha_pulse)
-        else:
-            # Renderizar o jogador (pássaro)
-            glColor3f(1.0, 1.0, 0.0)  # Amarelo
+        width = width * 4
+        height = height * 4
         
         glPushMatrix()
         glTranslatef(x, y, 0)
         
-        # Desenhar retângulo ou aplicar textura
-        glBegin(GL_QUADS)
-        glVertex2f(-width/2, -height/2)
-        glVertex2f(width/2, -height/2)
-        glVertex2f(width/2, height/2)
-        glVertex2f(-width/2, height/2)
-        glEnd()
+        glEnable(GL_TEXTURE_2D)
+        if self.texture_manager.bind_texture("player"):
+            glColor4f(1.0, 1.0, 1.0, 1.0)  # Cor branca para não alterar a textura
+            glBegin(GL_QUADS)
+            glTexCoord2f(0, 1); glVertex2f(-width/2, -height/2)
+            glTexCoord2f(1, 1); glVertex2f(width/2, -height/2)
+            glTexCoord2f(1, 0); glVertex2f(width/2, height/2)
+            glTexCoord2f(0, 0); glVertex2f(-width/2, height/2)
+            glEnd()
+        else:
+            # Fallback caso não consiga carregar textura
+            glDisable(GL_TEXTURE_2D)
+            glColor3f(1.0, 1.0, 0.0)
+            glBegin(GL_QUADS)
+            glVertex2f(-width/2, -height/2)
+            glVertex2f(width/2, -height/2)
+            glVertex2f(width/2, height/2)
+            glVertex2f(-width/2, height/2)
+            glEnd()
         
+        glDisable(GL_TEXTURE_2D)
         glPopMatrix()
+
     
     def render_obstacle(self, obstacle):
-        # Renderizar um obstáculo (par de tubos)
-        glColor3f(0.0, 0.8, 0.0)  # Verde
-        
         bounds = obstacle.get_bounds()
         
-        # Tubo superior
+        expansion = 4.5  # fator multiplicador
+        center_top = (bounds['top_pipe']['left'] + bounds['top_pipe']['right']) / 2
+        width_top = (bounds['top_pipe']['right'] - bounds['top_pipe']['left']) * expansion
+        left_top = center_top - width_top / 2
+        right_top = center_top + width_top / 2
+
+        center_bottom = (bounds['bottom_pipe']['left'] + bounds['bottom_pipe']['right']) / 2
+        width_bottom = width_top 
+        left_bottom = center_bottom - width_bottom / 2
+        right_bottom = center_bottom + width_bottom / 2
+
         top_pipe = bounds['top_pipe']
-        glBegin(GL_QUADS)
-        glVertex2f(top_pipe['left'], top_pipe['bottom'])
-        glVertex2f(top_pipe['right'], top_pipe['bottom'])
-        glVertex2f(top_pipe['right'], top_pipe['top'])
-        glVertex2f(top_pipe['left'], top_pipe['top'])
-        glEnd()
-        
-        # Tubo inferior
         bottom_pipe = bounds['bottom_pipe']
-        glBegin(GL_QUADS)
-        glVertex2f(bottom_pipe['left'], bottom_pipe['bottom'])
-        glVertex2f(bottom_pipe['right'], bottom_pipe['bottom'])
-        glVertex2f(bottom_pipe['right'], bottom_pipe['top'])
-        glVertex2f(bottom_pipe['left'], bottom_pipe['top'])
-        glEnd()
+
+        glEnable(GL_TEXTURE_2D)
+        
+        # Tubo superior (textura normal)
+        if self.texture_manager.bind_texture("cano"):
+            glColor4f(1.0, 1.0, 1.0, 1.0)
+            glBegin(GL_QUADS)
+            glTexCoord2f(0, 0); glVertex2f(left_top, top_pipe['bottom'])
+            glTexCoord2f(1, 0); glVertex2f(right_top, top_pipe['bottom'])
+            glTexCoord2f(1, 1); glVertex2f(right_top, top_pipe['top'])
+            glTexCoord2f(0, 1); glVertex2f(left_top, top_pipe['top'])
+            glEnd()
+
+        # Tubo inferior (textura invertida)
+        if self.texture_manager.bind_texture("cano"):
+            glColor4f(1.0, 1.0, 1.0, 1.0)
+            glBegin(GL_QUADS)
+            glTexCoord2f(0, 1); glVertex2f(left_bottom, bottom_pipe['bottom'])
+            glTexCoord2f(1, 1); glVertex2f(right_bottom, bottom_pipe['bottom'])
+            glTexCoord2f(1, 0); glVertex2f(right_bottom, bottom_pipe['top'])
+            glTexCoord2f(0, 0); glVertex2f(left_bottom, bottom_pipe['top'])
+            glEnd()
+
+        glDisable(GL_TEXTURE_2D)
+
     
     def render_collectible(self, collectible):
         # Renderizar um item coletável
