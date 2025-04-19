@@ -29,6 +29,8 @@ class Game:
         # Configurar callbacks de entrada
         glfw.set_key_callback(window, self.key_callback)
 
+        glfw.set_framebuffer_size_callback(window, self.framebuffer_size_callback)
+
         # Insatnciando o estado do jogo inicial
         self.state = TITLE
         self.score = 0
@@ -290,6 +292,9 @@ class Game:
         glfw.swap_buffers(self.window)
 
     def run(self):
+        # Configura o viewport inicial
+        glViewport(0, 0, self.width, self.height)
+
         # Loop principal do jogo
         self.running = True
         while self.running and not glfw.window_should_close(self.window):
@@ -301,3 +306,14 @@ class Game:
                 self.update()
 
             self.render()
+
+    def framebuffer_size_callback(self, window, width, height):
+        # Atualiza o viewport para cobrir toda a nova janela
+        glViewport(0, 0, width, height)
+
+        # Atualiza as dimensões armazenadas da janela
+        self.width, self.height = width, height
+
+        # Atualiza o aspect ratio no renderer
+        if hasattr(self, 'renderer'):
+            self.renderer.update_aspect_ratio(width, height)

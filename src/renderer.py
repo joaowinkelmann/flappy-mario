@@ -12,10 +12,15 @@ class Renderer:
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         
+        self.aspect_ratio = 1.0  # inicialmente 1:1
+
         # Gerenciador de texturas
         self.texture_manager = TextureManager()
         self.texture_manager.load_textures()
     
+    def update_aspect_ratio(self, width, height):
+        self.aspect_ratio = width / float(height) if height != 0 else 1.0
+
     def render_background(self):
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
@@ -27,6 +32,37 @@ class Renderer:
         glEnable(GL_TEXTURE_2D)
         if self.texture_manager.bind_texture("background"):
             glColor4f(1.0, 1.0, 1.0, 1.0)  # Branco para manter a textura original
+
+            # Ajusta com base no aspect ratio para cobrir toda a tela
+            tex_width = 1.0
+            tex_height = 1.0
+            
+            if self.aspect_ratio > 1.0:  # tela mais larga que alta
+                # Expande horizontalmente para cobrir toda a largura
+                tex_scale_x = self.aspect_ratio
+                tex_scale_y = 1.0
+            else:  # tela mais alta que larga
+                # Expande verticalmente para cobrir toda a altura
+                tex_scale_x = 1.0
+                tex_scale_y = 1.0 / self.aspect_ratio
+            
+            # Usando coordenadas de textura ajustadas para cobrir toda a área
+            glBegin(GL_QUADS)
+            # Define maior área para garantir cobertura total
+            left = -tex_scale_x
+            right = tex_scale_x
+            bottom = -tex_scale_y
+            top = tex_scale_y
+            
+            # Ajusta coordenadas de textura para manter a parte inferior do fundo visível
+            # e permitir corte na parte superior se necessário
+            glTexCoord2f(0, 1); glVertex2f(left, bottom)
+            glTexCoord2f(1, 1); glVertex2f(right, bottom)
+            glTexCoord2f(1, 0); glVertex2f(right, top)
+            glTexCoord2f(0, 0); glVertex2f(left, top)
+            glEnd()
+
+
             glBegin(GL_QUADS)
             glTexCoord2f(0, 1); glVertex2f(-1, -1) 
             glTexCoord2f(1, 1); glVertex2f(1, -1)
@@ -38,27 +74,52 @@ class Renderer:
             glDisable(GL_TEXTURE_2D)
 
             # Céu
+            if self.aspect_ratio > 1.0:
+                left = -self.aspect_ratio
+                right = self.aspect_ratio
+                bottom = -1.0
+                top = 1.0
+            else:
+                left = -1.0
+                right = 1.0
+                bottom = -1.0/self.aspect_ratio
+                top = 1.0/self.aspect_ratio
+                
             glColor3f(0.5, 0.7, 1.0)
             glBegin(GL_QUADS)
-            glVertex2f(-1, -1)
-            glVertex2f(1, -1)
-            glVertex2f(1, 1)
-            glVertex2f(-1, 1)
+            glVertex2f(left, bottom)
+            glVertex2f(right, bottom)
+            glVertex2f(right, top)
+            glVertex2f(left, top)
             glEnd()
 
             # Grama
             glColor3f(0.3, 0.8, 0.3)
             glBegin(GL_QUADS)
-            glVertex2f(-1, -1)
-            glVertex2f(1, -1)
-            glVertex2f(1, -0.8)
-            glVertex2f(-1, -0.8)
+            glVertex2f(left, bottom)
+            glVertex2f(right, bottom)
+            glVertex2f(right, bottom + 0.2)  # altura fixa para a grama
+            glVertex2f(left, bottom + 0.2)
             glEnd()
 
         glDisable(GL_TEXTURE_2D)
 
     
     def render_player(self, x, y, width, height, intangible):
+
+         # Configurar a projeção para manter a proporção correta
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        if self.aspect_ratio >= 1.0:
+            # Janela mais larga que alta
+            gluOrtho2D(-self.aspect_ratio, self.aspect_ratio, -1, 1)
+        else:
+            # Janela mais alta que larga
+            gluOrtho2D(-1, 1, -1/self.aspect_ratio, 1/self.aspect_ratio)
+        
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
+
         width = width * 4
         height = height * 4
         
@@ -90,6 +151,19 @@ class Renderer:
 
     
     def render_obstacle(self, obstacle):
+         # Configurar a projeção para manter a proporção correta
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        if self.aspect_ratio >= 1.0:
+            # Janela mais larga que alta
+            gluOrtho2D(-self.aspect_ratio, self.aspect_ratio, -1, 1)
+        else:
+            # Janela mais alta que larga
+            gluOrtho2D(-1, 1, -1/self.aspect_ratio, 1/self.aspect_ratio)
+        
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
+
         bounds = obstacle.get_bounds()
         
         expansion = 4.5  # fator multiplicador
@@ -132,6 +206,19 @@ class Renderer:
 
     
     def render_collectible(self, collectible):
+         # Configurar a projeção para manter a proporção correta
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        if self.aspect_ratio >= 1.0:
+            # Janela mais larga que alta
+            gluOrtho2D(-self.aspect_ratio, self.aspect_ratio, -1, 1)
+        else:
+            # Janela mais alta que larga
+            gluOrtho2D(-1, 1, -1/self.aspect_ratio, 1/self.aspect_ratio)
+        
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
+
         glPushMatrix()
         glTranslatef(collectible.x, collectible.y, 0)
 
