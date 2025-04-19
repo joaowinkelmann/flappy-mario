@@ -10,9 +10,9 @@ class TextureManager:
     def load_textures(self):     
         # Carrega o diretorio atual
         current_dir = os.path.dirname(os.path.abspath(__file__))
-
+        
         # Lista de texturas existentes
-        existing_textures = ["player", "cano"]
+        existing_textures = ["player", "pipe", "background", "extra_life", "speed_boost", "invincibility"]
         
         for name in existing_textures:
             path = os.path.join(current_dir, "assets", f"{name}.png")
@@ -38,6 +38,7 @@ class TextureManager:
             image = Image.open(filename).convert("RGBA")
             img_data = np.array(image, dtype=np.uint8)
 
+            
             # Enviar dados da imagem para o OpenGL
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width, image.height, 
                          0, GL_RGBA, GL_UNSIGNED_BYTE, img_data)
