@@ -71,7 +71,7 @@ primitivas
 - Definam variáveis públicas para determinar o tamanho dos sprites,
 range de colisão, velocidade, etc
 
-## Como executar
+## Como executar Linux
 
 1. Ter Python instalado. (Python 3.12.3 recomendado)
 ```bash
@@ -95,4 +95,36 @@ python main.py
 OU
 ```bash
 python3 main.py
+```
+
+## Como executar Windows
+
+1. Ter Python instalado. (Python 3.12.3 recomendado)
+```cmd
+pip --version
+```
+
+2. Instale as dependências do glfw:
+```cmd
+pip install glfw
+```
+
+3. Instale as dependências do OpenGL e PyOpenGL_accelerate:
+```cmd
+pip install PyOpenGL PyOpenGL_accelerate
+```
+
+4. Instale o numpy:
+```cmd
+pip install numpy
+```
+
+5. Instale o Pillow:
+```cmd
+pip install Pillow
+```
+
+5. Execute o jogo:
+```cmd
+python main.py
 ```
