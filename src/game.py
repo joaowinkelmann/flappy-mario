@@ -181,7 +181,7 @@ class Game:
 
             # Se bateu no canto da tela, perde uma vida
             if self.player.y <= -1.0 + self.player.height / 2:
-                 self.handle_death()
+                self.handle_death()
 
 
     def check_collisions(self):
@@ -199,7 +199,6 @@ class Game:
         collected = self.collectible_manager.check_collection(self.player)
         for item_type in collected:
             self.apply_collectible_effect(item_type)
-
 
     # Cuida dos eventos após a morte do jogador
     def handle_death(self):
@@ -233,12 +232,10 @@ class Game:
         self.player.reset_position()
         # Verificar: talvez deixar o player invencível
 
-
     def game_over(self):
         self.state = GAME_OVER
         self.player.alive = False
         print(f"Game Over! Score: {self.score}")
-
 
     def continue_game(self):
         # continua o jogo depois de perder uma das vidas
@@ -280,7 +277,7 @@ class Game:
                     if self.player.speed_boost_active:
                         self.ui.render_debug(f"Boost: {self.player.speed_boost_timer:.1f}s")
 
-                  self.ui.render(self.score, self.lives)
+                  self.ui.render(self.score, self.lives, self.player)
              elif self.state == GAME_OVER:
                   # Puxa a tela de game over
                   self.view.render_game_over_screen(self.score)

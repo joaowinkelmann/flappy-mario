@@ -7,7 +7,7 @@ class TextureManager:
     def __init__(self):
         self.textures = {}
     
-    def load_textures(self):     
+    def load_textures(self):
         # Carrega o diretorio atual
         current_dir = os.path.dirname(os.path.abspath(__file__))
         
