@@ -120,8 +120,8 @@ class Renderer:
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 
-        width = width * 4
-        height = height * 4
+        width = width * 5
+        height = height * 5
         
         glPushMatrix()
         glTranslatef(x, y, 0)
@@ -224,9 +224,9 @@ class Renderer:
 
         # Fatores de escala
         scale_factors = {
-            "extra_life": (6, 6),
-            "speed_boost": (4.5, 4.5),
-            "invincibility": (4, 4)
+            "extra_life": (2.5, 2.5),
+            "speed_boost": (2.5, 2.5),
+            "invincibility": (2.5, 2.5)
         }
 
         # Pega os fatores ou usa (1, 1) como padrão
