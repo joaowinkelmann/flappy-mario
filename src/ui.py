@@ -7,10 +7,11 @@ class UI:
         self.current_debug_height = 0
         self.debug_line_height = 20
         self.powerup_line_height = 20
+        self.score_line_height = 20
         self.width = width
         self.height = height
 
-    def render(self, score, lives, player):
+    def render(self, score, lives, player, coins):
         # a cada frame, reseta a altura do texto do debug
         self.reset_debug_height()
         
@@ -20,6 +21,7 @@ class UI:
         
         # Renderizar pontuação, vidas e powerup
         self.render_score(score)
+        self.render_coins(coins)
         self.render_lives(lives)
         self.render_powerups(player)
 
@@ -28,6 +30,12 @@ class UI:
         x = int(self.width * 0.80)
         y = int(self.height * 0.90)
         self.text_helper.render_text(f"Score: {score}", x, y, (1.0, 1.0, 1.0))
+        
+    def render_coins(self, coins):
+        x = int(self.width * 0.80)
+        y = int(self.height * 0.90) - self.score_line_height  # Logo abaixo do score
+        self.text_helper.render_text(f"Coins: {coins}", x, y, (1.0, 0.85, 0.0))  # Amarelo
+
 
     def render_lives(self, lives):
         # Renderizar vidas no canto superior esquerdo

@@ -54,6 +54,7 @@ class CollectibleManager:
         self.speed = speed # Velocidade dos itens (geralmente igual à dos obstáculos)
         self.obstacle_manager = None # check de colisão
         self.player = None # Passando o player pra atualizar as chances de spawn de item
+        self.coins_collected = 0 # Contador de moedas coletadas
 
     def set_obstacle_manager(self, obstacle_manager):
         self.obstacle_manager = obstacle_manager
@@ -109,7 +110,7 @@ class CollectibleManager:
     def spawn_collectible(self):
         # Default: 50% de chance de spawn
         spawn_chance = 0.5
-        item_types = ["extra_life", "speed_boost", "invincibility"]
+        item_types = ["extra_life", "speed_boost", "invincibility", "coin"]
 
         # Se o jogador estiver com speed boost, aumenta a chance de spawn
         if self.player and getattr(self.player, "speed_boost_active", False):
@@ -140,6 +141,8 @@ class CollectibleManager:
         collected_items = []
         for item in self.collectibles:
             if item.check_collision(player):
+                if item.item_type == "coin":
+                    self.coins_collected += 1
                 collected_items.append(item.item_type)
         return collected_items
     

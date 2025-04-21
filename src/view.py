@@ -77,7 +77,7 @@ class View:
         self.text_helper.render_text(title_text, title_x, title_y, (1.0, 1.0, 0.0))  # Título amarelo
         self.text_helper.render_text(instruction_text, instruction_x, instruction_y, (1.0, 1.0, 1.0))  # Instrução branca
 
-    def render_game_over_screen(self, score, max_speed):
+    def render_game_over_screen(self, score, max_speed, coins):
         """Renderiza a tela de game over com sobreposição e texto."""
         self.update_dimensions() # Garante que as dimensões estão atualizadas
 
@@ -101,6 +101,7 @@ class View:
         # Define os textos
         game_over_text = "Game Over!"
         score_text = f"Score: {score}"
+        coins_text = f"Coins: {coins}"
         max_speed_text = f"Max Speed: {max_speed:.1f}"
         restart_text = "Press R to Restart"
         quit_text = "Press ESC to Quit"
@@ -108,6 +109,7 @@ class View:
         # Calcula as posições Y
         game_over_y = int(self.height * 0.7)
         score_y = int(self.height * 0.6)
+        coins_y = int(self.height * 0.55) 
         max_speed_y = int(self.height * 0.5)
         restart_y = int(self.height * 0.4)
         quit_y = int(self.height * 0.3)
@@ -115,6 +117,7 @@ class View:
         # Calcula as posições X centralizadas para cada texto
         game_over_x = self.center_x(game_over_text)
         score_x = self.center_x(score_text)
+        coins_x = self.center_x(coins_text)
         max_speed_x = self.center_x(max_speed_text)
         restart_x = self.center_x(restart_text)
         quit_x = self.center_x(quit_text)
@@ -122,6 +125,7 @@ class View:
         # Renderiza os textos usando TextHelper
         self.text_helper.render_text(game_over_text, game_over_x, game_over_y, (1.0, 0.0, 0.0)) # Vermelho
         self.text_helper.render_text(score_text, score_x, score_y, (1.0, 1.0, 1.0)) # Branco
+        self.text_helper.render_text(coins_text, coins_x, coins_y, (1.0, 0.85, 0.0)) # Amarelo
         self.text_helper.render_text(max_speed_text, max_speed_x, max_speed_y, (1.0, 1.0, 1.0)) # Branco
         self.text_helper.render_text(restart_text, restart_x, restart_y, (1.0, 1.0, 1.0)) # Branco
         self.text_helper.render_text(quit_text, quit_x, quit_y, (1.0, 1.0, 1.0)) # Branco

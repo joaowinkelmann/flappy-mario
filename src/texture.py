@@ -12,7 +12,7 @@ class TextureManager:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         
         # Lista de texturas existentes
-        existing_textures = ["player", "pipe", "background", "extra_life", "speed_boost", "invincibility"]
+        existing_textures = ["player", "pipe", "background", "extra_life", "speed_boost", "invincibility", "coin"]
         
         for name in existing_textures:
             path = os.path.join(current_dir, "assets", f"{name}.png")

@@ -225,7 +225,8 @@ class Renderer:
         scale_factors = {
             "extra_life": (2.5, 2.5),
             "speed_boost": (2.5, 2.5),
-            "invincibility": (2.5, 2.5)
+            "invincibility": (2.5, 2.5),
+            "coin": (1.5, 3.0)
         }
 
         # Pega os fatores ou usa (1, 1) como padrão
@@ -248,7 +249,8 @@ class Renderer:
                 fallback_colors = {
                     "extra_life": (1.0, 0.0, 0.0),
                     "speed_boost": (0.0, 0.0, 1.0),
-                    "invincibility": (1.0, 0.5, 0.0)
+                    "invincibility": (1.0, 0.5, 0.0),
+                    "coin": (1.0, 0.85, 0.0)
                 }
                 glColor3f(*fallback_colors.get(collectible.item_type, (1.0, 1.0, 1.0)))
                 self._draw_collectible_circle(collectible)
@@ -260,6 +262,8 @@ class Renderer:
             render_textured_quad("speed_boost")
         elif collectible.item_type == "invincibility":
             render_textured_quad("invincibility")
+        elif collectible.item_type == "coin":
+            render_textured_quad("coin")
         else:
             glColor3f(1.0, 1.0, 1.0)
             self._draw_collectible_circle(collectible)

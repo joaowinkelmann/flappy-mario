@@ -221,7 +221,8 @@ class Game:
         elif item_type == "invincibility":
             # seta com timer pra voltar a ser tangível
             self.player.activate_intangibility(5.0)
-        # Outros efeitos podem ser adicionados
+        elif item_type == "coin":
+            self.score += 1  # Opcional: aumenta o score ao pegar moeda
 
 
     def reset_player_position(self):
@@ -274,10 +275,10 @@ class Game:
                     if self.player.speed_boost_active:
                         self.ui.render_debug(f"Boost: {self.player.speed_boost_timer:.1f}s")
 
-                  self.ui.render(self.score, self.lives, self.player)
+                  self.ui.render(self.score, self.lives, self.player, coins=self.collectible_manager.coins_collected)
              elif self.state == GAME_OVER:
                   # Puxa a tela de game over
-                  self.view.render_game_over_screen(self.score, self.player.max_speed_obtained)
+                  self.view.render_game_over_screen(self.score, self.player.max_speed_obtained, coins=self.collectible_manager.coins_collected)
              elif self.state == CONTINUE_SCREEN:
                   # Puxa a tela de continue
                   self.view.render_continue_screen(self.lives)

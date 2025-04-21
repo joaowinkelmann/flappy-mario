@@ -21,7 +21,7 @@ OBSTACLE_SPEED = 0.5
 OBSTACLE_SPAWN_INTERVAL = 2.0
 OBSTACLE_GAP_SIZE = 0.6 # Tamanho do espaço vertical entre os canos
 OBSTACLE_WIDTH = 0.1  # Largura dos canos
-COLLECTIBLE_SPAWN_INTERVAL = 3.0  # Tempo entre cada tentativa de spawn de coletável
+COLLECTIBLE_SPAWN_INTERVAL = 2.0  # Tempo entre cada tentativa de spawn de coletável
 COLLECTIBLE_SPEED = 0.5 
 INITIAL_LIVES = 5
 
