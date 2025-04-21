@@ -37,16 +37,29 @@ class Obstacle:
         pipe_bounds = self.get_bounds()
         
         # Colisão com tubo superior
-        if (player_bounds['right'] > pipe_bounds['top_pipe']['left'] and
-            player_bounds['left'] < pipe_bounds['top_pipe']['right'] and
-            player_bounds['top'] > pipe_bounds['top_pipe']['bottom']):
+        # if (player_bounds['right'] > pipe_bounds['top_pipe']['left'] and
+        #     player_bounds['left'] < pipe_bounds['top_pipe']['right'] and
+        #     player_bounds['top'] > pipe_bounds['top_pipe']['bottom']):
+        #     return True
+        
+        margin = 0.001
+        if (player_bounds['right'] > pipe_bounds['top_pipe']['left'] + margin and
+            player_bounds['left'] < pipe_bounds['top_pipe']['right'] - margin and
+            player_bounds['top'] > pipe_bounds['top_pipe']['bottom'] + margin):
+            return True
+
+        # Colisão com o chão
+        
+        if (player_bounds['right'] > pipe_bounds['bottom_pipe']['left'] + margin and
+            player_bounds['left'] < pipe_bounds['bottom_pipe']['right'] - margin and
+            player_bounds['bottom'] < pipe_bounds['bottom_pipe']['top'] - margin):
             return True
         
         # Colisão com tubo inferior
-        if (player_bounds['right'] > pipe_bounds['bottom_pipe']['left'] and
-            player_bounds['left'] < pipe_bounds['bottom_pipe']['right'] and
-            player_bounds['bottom'] < pipe_bounds['bottom_pipe']['top']):
-            return True
+        # if (player_bounds['right'] > pipe_bounds['bottom_pipe']['left'] and
+        #     player_bounds['left'] < pipe_bounds['bottom_pipe']['right'] and
+        #     player_bounds['bottom'] < pipe_bounds['bottom_pipe']['top']):
+        #     return True
         
         return False
     
@@ -102,7 +115,7 @@ class ObstacleManager:
     def check_collision(self, player):
         # se o player ta invencivel, ja sai
         if player.intangible:
-            return
+            return False
         
         # Verificar colisão com todos os obstáculos
         for obstacle in self.obstacles:

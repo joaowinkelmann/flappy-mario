@@ -76,36 +76,22 @@ class CollectibleManager:
                 self.collectibles.remove(item)
 
     def is_position_valid(self, x, y, width, height):
-        if self.obstacle_manager is None:
-            return True # deu ruim pq era pra ter, mas retorna true, azar
+            if self.obstacle_manager is None:
+                return True
         
-        # margem de segurança
-        item_bounds = {
-            'left': x - width/2,
-            'right': x + width/2,
-            'top': y + height/2,
-            'bottom': y - height/2
-        }
-        
-        # checa se o item colide com os obstáculos
-        for obstacle in self.obstacle_manager.obstacles:
-            obstacle_bounds = obstacle.get_bounds()
-            
-            top_pipe = obstacle_bounds['top_pipe']
-            if (item_bounds['right'] > top_pipe['left'] and
-                item_bounds['left'] < top_pipe['right'] and
-                item_bounds['top'] > top_pipe['bottom'] and
-                item_bounds['bottom'] < top_pipe['top']):
-                return False
-            
-            bottom_pipe = obstacle_bounds['bottom_pipe']
-            if (item_bounds['right'] > bottom_pipe['left'] and
-                item_bounds['left'] < bottom_pipe['right'] and
-                item_bounds['top'] > bottom_pipe['bottom'] and
-                item_bounds['bottom'] < bottom_pipe['top']):
-                return False
-        
-        return True
+            for obstacle in self.obstacle_manager.obstacles:
+                bounds = obstacle.get_bounds()
+
+                # Se o item está horizontalmente sobre o obstáculo
+                if bounds['bottom_pipe']['left'] < x < bounds['bottom_pipe']['right']:
+                    # O Y precisa estar DENTRO do GAP.
+                    gap_top = bounds['top_pipe']['bottom']
+                    gap_bottom = bounds['bottom_pipe']['top']
+                    if not (gap_bottom + height/2 <= y <= gap_top - height/2):
+                        return False
+                        
+            return True
+
     
     def spawn_collectible(self):
         # Default: 50% de chance de spawn
