@@ -119,6 +119,8 @@ class Game:
             elif self.state == GAME_OVER:
                 if key == glfw.KEY_R:
                     self.restart_game()
+                if key == glfw.KEY_C:
+                    self.state = DIFF_SELECT
 
             if self.state == DIFF_SELECT:
                 if key == glfw.KEY_1:

@@ -109,6 +109,7 @@ class View:
         max_speed_text = f"Max Speed: {max_speed:.1f}"
         restart_text = "Press R to Restart"
         quit_text = "Press ESC to Quit"
+        difficulty_text = "Press C to change difficulty"
 
         # Calcula as posições Y
         game_over_y = int(self.height * 0.7)
@@ -117,6 +118,7 @@ class View:
         max_speed_y = int(self.height * 0.5)
         restart_y = int(self.height * 0.4)
         quit_y = int(self.height * 0.3)
+        difficulty_y = int(self.height * 0.2)
 
         # Calcula as posições X centralizadas para cada texto
         game_over_x = self.center_x(game_over_text)
@@ -125,6 +127,7 @@ class View:
         max_speed_x = self.center_x(max_speed_text)
         restart_x = self.center_x(restart_text)
         quit_x = self.center_x(quit_text)
+        difficulty_x = self.center_x(difficulty_text)
 
         # Renderiza os textos usando TextHelper
         self.text_helper.render_text(game_over_text, game_over_x, game_over_y, (1.0, 0.0, 0.0)) # Vermelho
@@ -133,6 +136,7 @@ class View:
         self.text_helper.render_text(max_speed_text, max_speed_x, max_speed_y, (1.0, 1.0, 1.0)) # Branco
         self.text_helper.render_text(restart_text, restart_x, restart_y, (1.0, 1.0, 1.0)) # Branco
         self.text_helper.render_text(quit_text, quit_x, quit_y, (1.0, 1.0, 1.0)) # Branco
+        self.text_helper.render_text(difficulty_text, difficulty_x, difficulty_y, (1.0, 1.0, 1.0)) # Branco
 
     def render_continue_screen(self, lives):
         """Renderiza a tela de pausa para continuar após perder uma vida."""
