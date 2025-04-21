@@ -93,6 +93,10 @@ class ObstacleManager:
         self.obstacles.append(new_obstacle)
     
     def check_collision(self, player):
+        # se o player ta invencivel, ja sai
+        if player.intangible:
+            return
+        
         # Verificar colisão com todos os obstáculos
         for obstacle in self.obstacles:
             if obstacle.check_collision(player):

@@ -6,6 +6,7 @@ class UI:
         self.text_helper = TextHelper(game_font, width, height)
         self.current_debug_height = 0
         self.debug_line_height = 20
+        self.powerup_line_height = 20
         self.width = width
         self.height = height
 
@@ -20,38 +21,37 @@ class UI:
         # Renderizar pontuação, vidas e powerup
         self.render_score(score)
         self.render_lives(lives)
-        self.render_powerup(player)
+        self.render_powerups(player)
 
     def render_score(self, score):
         # Renderizar pontuação no canto superior direito
         x = int(self.width * 0.80)
         y = int(self.height * 0.90)
-        self.text_helper.render_text(f"Score: {score}", x, y, color=(1.0, 1.0, 1.0))
+        self.text_helper.render_text(f"Score: {score}", x, y, (1.0, 1.0, 1.0))
 
     def render_lives(self, lives):
         # Renderizar vidas no canto superior esquerdo
         x = int(self.width * 0.10)
         y = int(self.height * 0.90) 
-        self.text_helper.render_text(f"Lives: {lives}", x, y, color=(1.0, 0.0, 0.0))
+        self.text_helper.render_text(f"Lives: {lives}", x, y, (1.0, 0.0, 0.0))
         
-    def render_powerup(self, player):
-        # Renderizar o powerup ativo abaixo das vidas do jogador
-        powerup_text = None
-        color = (1.0, 1.0, 1.0) # Branco, reseta
+    def render_powerups(self, player):
+        # Renderizar todos os powerups ativos abaixo das vidas do jogador
+        powerups = []
         if player.intangible:
-            powerup_text = "Power: Invincibility"
-            color = (1.0, 0.8, 0.2) # Amarelo
-        elif player.speed_boost_active and player.speed_multiplier > 1.0: # bug: continua mostrando depois de pegar outro powerup ou morrer, por isso o check do speed_multiplier
+            powerups.append(("Power: Invincibility", (1.0, 0.8, 0.2)))  # Amarelo
+        if player.speed_boost_active and player.speed_multiplier > 1.0: # bug: continua mostrando depois de pegar outro powerup ou morrer, por isso o check do speed_multiplier
             # se tiver com speed, verifica o speed_multiplier pra colocar quantas vezes pegou
             multiplier = player.speed_multiplier
-            powerup_text = f"Power: Speed Boost x{multiplier:.1f}"
-            color = (0.2, 0.6, 1.0) # Azul
+            powerups.append((f"Power: Speed Boost x{multiplier:.1f}", (0.2, 0.6, 1.0)))
+            
+        x      = int(self.width * 0.10)
+        base_y = int(self.height * 0.85)
 
-        # se setou texto, renderiza
-        if powerup_text:
-            x = int(self.width * 0.10)
-            y = int(self.height * 0.85)
-            self.text_helper.render_text(powerup_text, x, y, color=color)
+        # Renderizar cada powerup em uma linha separada
+        for powerup_text, color in powerups:
+            self.text_helper.render_text(powerup_text, x, base_y, color)
+            base_y -= self.powerup_line_height
 
     # Reseta a altura do texto de debug para o próximo frame
     def reset_debug_height(self):
@@ -66,7 +66,7 @@ class UI:
             debug_info, 
             int(self.width * 0.02),
             base_y + self.current_debug_height,
-            color=(1.0, 1.0, 1.0)
+            (1.0, 1.0, 1.0)
         )
         
         # incrementa para a próxima linha

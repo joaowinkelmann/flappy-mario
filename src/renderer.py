@@ -1,7 +1,6 @@
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import numpy as np
-import time
 
 from src.texture import TextureManager
 

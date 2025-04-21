@@ -24,8 +24,8 @@ class View:
         instruction_x = int(self.width * 0.5 - 125)
         instruction_y = int(self.height * 0.5)
         
-        self.text_helper.render_text("Flappy Bird OpenGL", title_x, title_y, color=(1.0, 1.0, 0.0))
-        self.text_helper.render_text("Press SPACE to Start", instruction_x, instruction_y, color=(1.0, 1.0, 1.0))
+        self.text_helper.render_text("Flappy Bird OpenGL", title_x, title_y, (1.0, 1.0, 0.0))
+        self.text_helper.render_text("Press SPACE to Start", instruction_x, instruction_y, (1.0, 1.0, 1.0))
 
     def render_game_over_screen(self, score):
         # Se a tela foi redimensionada, atualiza as dimensões
@@ -62,10 +62,10 @@ class View:
         quit_y = int(self.height * 0.4)
 
         # Renderiza o texto de Game Over e as instruções
-        self.text_helper.render_text("Game Over!", game_over_x, game_over_y, color=(1.0, 0.0, 0.0))
-        self.text_helper.render_text(f"Score: {score}", score_x, score_y, color=(1.0, 1.0, 1.0))
-        self.text_helper.render_text("Press R to Restart", restart_x, restart_y, color=(1.0, 1.0, 1.0))
-        self.text_helper.render_text("Press ESC to Quit", quit_x, quit_y, color=(1.0, 1.0, 1.0))
+        self.text_helper.render_text("Game Over!", game_over_x, game_over_y, (1.0, 0.0, 0.0))
+        self.text_helper.render_text(f"Score: {score}", score_x, score_y, (1.0, 1.0, 1.0))
+        self.text_helper.render_text("Press R to Restart", restart_x, restart_y, (1.0, 1.0, 1.0))
+        self.text_helper.render_text("Press ESC to Quit", quit_x, quit_y, (1.0, 1.0, 1.0))
     
     def render_continue_screen(self, lives):
         self.width = self.text_helper.window_width
@@ -88,8 +88,6 @@ class View:
         glEnd()
         glColor4f(1.0, 1.0, 1.0, 1.0)
 
-        continue_x = int(self.width * 0.5 - 120)
-        continue_y = int(self.height * 0.6)
         
         lives_x = int(self.width * 0.5 - 60)
         lives_y = int(self.height * 0.5)
@@ -97,5 +95,5 @@ class View:
         options_x = int(self.width * 0.5 - 130)
         options_y = int(self.height * 0.4)
 
-        self.text_helper.render_text(f"Lives remaining: {lives}", lives_x, lives_y, color=(1.0, 1.0, 1.0))
-        self.text_helper.render_text("Press SPACE to continue or ESC to quit", options_x, options_y, color=(1.0, 1.0, 1.0))
+        self.text_helper.render_text(f"Lives remaining: {lives}", lives_x, lives_y, (1.0, 1.0, 1.0))
+        self.text_helper.render_text("Press SPACE to continue or ESC to quit", options_x, options_y, (1.0, 1.0, 1.0))

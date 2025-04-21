@@ -186,16 +186,11 @@ class Game:
 
     def check_collisions(self):
         # Verificar colisão com obstáculos
-
-        # se o player ta intangível, ja sai
-        if self.player.intangible:
-            return
-
         if self.obstacle_manager.check_collision(self.player):
             self.handle_death()
             return
 
-        # Verificar colisão com coletáveis
+        # Verificar colisão com coletáveis. agora se tiver invencivel, continua pegando
         collected = self.collectible_manager.check_collection(self.player)
         for item_type in collected:
             self.apply_collectible_effect(item_type)
@@ -273,7 +268,7 @@ class Game:
                     self.ui.render_debug(f"FPS: {fps:.2f}")
 
                     if self.player.intangible:
-                        self.ui.render_debug(f"Intangível: {self.player.intangible_timer:.1f}s")
+                        self.ui.render_debug(f"Invencível: {self.player.intangible_timer:.1f}s")
                     if self.player.speed_boost_active:
                         self.ui.render_debug(f"Boost: {self.player.speed_boost_timer:.1f}s")
 

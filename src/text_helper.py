@@ -48,7 +48,7 @@ class TextHelper:
             print(f"Erro ao inicializar GLUT: {e}")
             return False
 
-    def render_text(self, text, x, y, font=None, color=(1.0, 1.0, 1.0)):
+    def render_text(self, text, x, y, color=(1.0, 1.0, 1.0), font=None):
         if not text:
             return
             
