@@ -62,20 +62,24 @@ class View:
         glEnd()
 
         # Define os textos
-        title_text = "Flappy Bird OpenGL"
+        title_text = "Flappy Mario OpenGL"
         instruction_text = "Press SPACE to Start"
+        difficulty_text = "Press C to change difficulty"
 
         # Calcula as posições Y
         title_y = int(self.height * 0.66) # Posição Y do título
         instruction_y = int(self.height * 0.5) # Posição Y da instrução
+        difficulty_y = int(self.height * 0.3) # Posição Y da instrução
 
         # Calcula as posições X centralizadas
         title_x = self.center_x(title_text)
         instruction_x = self.center_x(instruction_text)
+        difficulty_x = self.center_x(difficulty_text)
 
         # Renderiza os textos usando TextHelper
         self.text_helper.render_text(title_text, title_x, title_y, (1.0, 1.0, 0.0))  # Título amarelo
         self.text_helper.render_text(instruction_text, instruction_x, instruction_y, (1.0, 1.0, 1.0))  # Instrução branca
+        self.text_helper.render_text(difficulty_text, difficulty_x, difficulty_y, (1.0, 1.0, 1.0))  # Dificuldade branca
 
     def render_game_over_screen(self, score, max_speed, coins):
         """Renderiza a tela de game over com sobreposição e texto."""
@@ -166,3 +170,49 @@ class View:
         # Renderiza os textos usando TextHelper
         self.text_helper.render_text(lives_text, lives_x, lives_y, (1.0, 1.0, 1.0)) # Branco
         self.text_helper.render_text(options_text, options_x, options_y, (1.0, 1.0, 1.0)) # Branco
+
+    def render_difficulty_screen(self, lives):
+        """Renderiza a tela de seleção de dificuldade."""
+
+        self.update_dimensions()  # Atualiza as dimensões da tela
+
+        # Configura a projeção ortográfica para renderização 2D
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        glOrtho(-1, 1, -1, 1, -1, 1)
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
+
+        # Desenha uma sobreposição azul clara semi-transparente
+        glColor4f(0.2, 0.4, 1.0, 0.2)  # Azul com 20% de transparência
+        glBegin(GL_QUADS)
+        glVertex2f(-1, -1)
+        glVertex2f(1, -1)
+        glVertex2f(1, 1)
+        glVertex2f(-1, 1)
+        glEnd()
+        glColor4f(1.0, 1.0, 1.0, 1.0)  # Restaura a cor branca opaca para o texto
+
+        # Textos a serem exibidos
+        title_text = "Press the key and select the difficulty"
+        option1_text = "1 - Easy"
+        option2_text = "2 - Normal"
+        option3_text = "3 - Hard"
+
+        # Posições Y (espalhadas verticalmente)
+        title_y = int(self.height * 0.65)
+        option1_y = int(self.height * 0.50)
+        option2_y = int(self.height * 0.40)
+        option3_y = int(self.height * 0.30)
+
+        # Posições X centralizadas
+        title_x = self.center_x(title_text)
+        option1_x = self.center_x(option1_text)
+        option2_x = self.center_x(option2_text)
+        option3_x = self.center_x(option3_text)
+
+        # Renderiza os textos
+        self.text_helper.render_text(title_text, title_x, title_y, (1.0, 1.0, 1.0))
+        self.text_helper.render_text(option1_text, option1_x, option1_y, (1.0, 1.0, 1.0))
+        self.text_helper.render_text(option2_text, option2_x, option2_y, (1.0, 1.0, 1.0))
+        self.text_helper.render_text(option3_text, option3_x, option3_y, (1.0, 1.0, 1.0))

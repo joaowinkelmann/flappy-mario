@@ -1,6 +1,6 @@
-# Flappy Bird com OpenGL
+# Flappy Mario com OpenGL
 
-Implementação do jogo Flappy Bird usando PyOpenGL para a disciplina de Computação Gráfica.
+Implementação do jogo Flappy Mario usando PyOpenGL para a disciplina de Computação Gráfica.
 
 # Screenshots
 
@@ -18,6 +18,12 @@ Implementação do jogo Flappy Bird usando PyOpenGL para a disciplina de Computa
 
 ![Gameplay](screenshots/v1.2/game_over.png)
 ![Game-over](screenshots/v1.2/gameplay.png)
+
+#### Versão v1.6
+![Gameplay](screenshots/v1.6/dificuldade_escolha.png)
+![Gameplay](screenshots/v1.6/dificuldade_easy.png)
+![Game-over](screenshots/v1.6/difuculdade_normal.png)
+![Game-over](screenshots/v1.6/dificuldade_hard.png)
 
 # Requisitos
 - Deve ser feito na linguagem Python

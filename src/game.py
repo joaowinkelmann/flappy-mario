@@ -13,7 +13,7 @@ from src.view import View
 TITLE = 0
 PLAYING = 1
 GAME_OVER = 2
-DIFF_SELECT = 3 # TODO: Implementar
+DIFF_SELECT = 3
 CONTINUE_SCREEN = 4
 
 class Game:
@@ -108,6 +108,8 @@ class Game:
             if self.state == TITLE:
                 if key == glfw.KEY_SPACE:
                     self.start_game()
+                if key == glfw.KEY_C:
+                    self.state = DIFF_SELECT
             elif self.state == PLAYING:
                 if key == glfw.KEY_SPACE:
                     self.player.flap()
@@ -116,6 +118,20 @@ class Game:
                     self.continue_game()
             elif self.state == GAME_OVER:
                 if key == glfw.KEY_R:
+                    self.restart_game()
+
+            if self.state == DIFF_SELECT:
+                if key == glfw.KEY_1:
+                    self.config["obstacle_speed"] = 0.8
+                    self.config["collectible_speed"] =0.8
+                    self.restart_game()
+                elif key == glfw.KEY_2:
+                    self.config["obstacle_speed"] = 0.5
+                    self.config["collectible_speed"] =0.5
+                    self.restart_game()
+                elif key == glfw.KEY_3:
+                    self.config["obstacle_speed"] = 0.3
+                    self.config["collectible_speed"] = 0.3
                     self.restart_game()
 
     # inicia o jogo
@@ -282,6 +298,8 @@ class Game:
              elif self.state == CONTINUE_SCREEN:
                   # Puxa a tela de continue
                   self.view.render_continue_screen(self.lives)
+             elif self.state == DIFF_SELECT:
+                  self.view.render_difficulty_screen(self.lives)
 
         # Trocar buffers
         glfw.swap_buffers(self.window)

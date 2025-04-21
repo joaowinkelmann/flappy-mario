@@ -9,7 +9,7 @@ from src.game import Game
 # Configurações de janela
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
-WINDOW_TITLE = "Jogo Flappy Bird"
+WINDOW_TITLE = "Flappy Mario Bird"
 
 # Configurações de física
 GRAVITY = -9.8
