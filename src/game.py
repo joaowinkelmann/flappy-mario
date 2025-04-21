@@ -297,7 +297,7 @@ class Game:
                     if self.player.speed_boost_active:
                         self.ui.render_debug(f"Boost: {self.player.speed_boost_timer:.1f}s")
 
-                  self.ui.render(self.score, self.lives, self.player, coins=self.collectible_manager.coins_collected)
+                  self.ui.render(self.config, self.score, self.lives, self.player, coins=self.collectible_manager.coins_collected)
              elif self.state == GAME_OVER:
                   # Puxa a tela de game over
                   self.view.render_game_over_screen(self.config, self.score, self.player.max_speed_obtained, coins=self.collectible_manager.coins_collected)

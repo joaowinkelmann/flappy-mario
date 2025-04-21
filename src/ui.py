@@ -11,7 +11,7 @@ class UI:
         self.width = width
         self.height = height
 
-    def render(self, score, lives, player, coins):
+    def render(self, config, score, lives, player, coins):
         # a cada frame, reseta a altura do texto do debug
         self.reset_debug_height()
         
@@ -24,6 +24,7 @@ class UI:
         self.render_coins(coins)
         self.render_lives(lives)
         self.render_powerups(player)
+        self.render_difficulty(config)
 
     def render_score(self, score):
         # Renderizar pontuação no canto superior direito
@@ -35,6 +36,11 @@ class UI:
         x = int(self.width * 0.80)
         y = int(self.height * 0.90) - self.score_line_height  # Logo abaixo do score
         self.text_helper.render_text(f"Coins: {coins}", x, y, (1.0, 0.85, 0.0))  # Amarelo
+
+    def render_difficulty(self, config):
+        x = int(self.width * 0.80)
+        y = int(self.height * 0.87) - self.score_line_height  # Logo abaixo dos coins
+        self.text_helper.render_text(f"Difficulty: {config['difficulty']}", x, y, (1.0, 0.0, 0.0))  # vermelho
 
 
     def render_lives(self, lives):
