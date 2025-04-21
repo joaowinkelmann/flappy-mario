@@ -13,7 +13,6 @@ class Player:
         self.gravity = gravity
         self.flap_force = flap_force
         self.terminal_velocity = terminal_velocity
-        # self.tangible = True  # se o player é tangível (verificar, talvez usar com powerup)
         
         # Tamanho do jogador (para colisões)
         self.width = width
@@ -24,6 +23,7 @@ class Player:
         self.speed_multiplier = 1.0
         self.intangible = False
         self.speed_boost_active = False
+        self.max_speed_obtained = 1.0 # Guarda a velocidade máxima obtida para mostrar no score final
     
     def update(self, delta_time):
         # Aplicar gravidade
@@ -44,7 +44,7 @@ class Player:
             self.y = 1.0 - self.height/2
             self.velocity = 0
             
-        # Atualiza os timers de power-ups
+        # atualiza os timer dos power-ups
         self.update_timers(delta_time)
     
     def update_timers(self, delta_time):
@@ -86,6 +86,9 @@ class Player:
         # self.speed_multiplier = multiplier
         # EXPERIMENTAL: se ja ta ativo, aumenta ainda mais a velocidade
         self.speed_multiplier *= multiplier
+        # Atualiza a velocidade máxima obtida
+        if self.speed_multiplier > self.max_speed_obtained:
+            self.max_speed_obtained = self.speed_multiplier
         self.speed_boost_timer = duration
     
     def reset_position(self):

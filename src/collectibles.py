@@ -53,25 +53,26 @@ class CollectibleManager:
         self.spawn_interval = spawn_interval # Intervalo entre novos itens
         self.speed = speed # Velocidade dos itens (geralmente igual à dos obstáculos)
         self.obstacle_manager = None # check de colisão
+        self.player = None # Passando o player pra atualizar as chances de spawn de item
 
     def set_obstacle_manager(self, obstacle_manager):
         self.obstacle_manager = obstacle_manager
+        
+    def set_player(self, player):
+        self.player = player
     
     def update(self, delta_time):
-        # Atualizar timer para spawn de novos itens
         self.spawn_timer += delta_time
         if self.spawn_timer >= self.spawn_interval:
             self.spawn_timer = 0
             self.spawn_collectible()
-        
         # Atualizar itens existentes
         for item in self.collectibles[:]:
             item.update(delta_time, self.speed)
-            
             # Remover itens que saíram da tela ou foram coletados
+            
             if item.x < -1.5 or item.collected:
                 self.collectibles.remove(item)
-
 
     def is_position_valid(self, x, y, width, height):
         if self.obstacle_manager is None:
@@ -106,25 +107,31 @@ class CollectibleManager:
         return True
     
     def spawn_collectible(self):
-        # Chance de 50% de spawnar um item
-        if random.random() < 0.5:
+        # Default: 50% de chance de spawn
+        spawn_chance = 0.5
+        item_types = ["extra_life", "speed_boost", "invincibility"]
+
+        # Se o jogador estiver com speed boost, aumenta a chance de spawn
+        if self.player and getattr(self.player, "speed_boost_active", False):
+            spawn_chance = 0.9 # 90% de chance de spawn
+            # desses 90%, 70% de chance de ser speed boost
+            if random.random() < 0.7:
+                forced_type = "speed_boost"
+            else:
+                forced_type = random.choice(item_types)
+        else:
+            forced_type = random.choice(item_types)
+
+        if random.random() > spawn_chance:
             return
-            
-        # Criar novo item aleatório
+
         pos_x = 1.2
-        
         item_width = 0.05
         item_height = 0.05
-        
         pos_y = random.uniform(-0.8, 0.8)
 
-        # verifica colisão com os pipes
         if self.is_position_valid(pos_x, pos_y, item_width, item_height):
-            # Selecionar tipo aleatório
-            item_types = ["extra_life", "speed_boost", "invincibility"]
-            item_type = random.choice(item_types)
-            
-            new_item = Collectible(pos_x, pos_y, item_type)
+            new_item = Collectible(pos_x, pos_y, forced_type)
             self.collectibles.append(new_item)
             return
     

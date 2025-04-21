@@ -66,13 +66,20 @@ class ObstacleManager:
     def __init__(self, speed=0.5, spawn_interval=2.0, gap_size=0.3, obstacle_width=0.1):
         self.obstacles = []
         self.spawn_timer = 0
-        self.spawn_interval = spawn_interval  # Intervalo entre novos obstáculos
-        self.speed = speed  # Velocidade base
+        self.base_spawn_interval = spawn_interval  # Intervalo entre novos obstáculos
+        self.base_speed = speed  # Velocidade base
+        self.spawn_interval = spawn_interval # Dinamicamente ajustado por causa do speed boost
+        self.speed = speed # Dinamicamente ajustado por causa do speed boost
         self.gap_size = gap_size  # Tamanho da abertura entre os tubos
         self.obstacle_width = obstacle_width  # Largura dos obstáculos
     
     def update(self, delta_time):
-        # Atualizar timer para spawn de novos obstáculos
+        # Ajusta o intervalo de spawn para manter o espaçamento visual constante
+        if self.speed > 0:
+            self.spawn_interval = self.base_spawn_interval * (self.base_speed / self.speed)
+        else:
+            self.spawn_interval = self.base_spawn_interval
+
         self.spawn_timer += delta_time
         if self.spawn_timer >= self.spawn_interval:
             self.spawn_timer = 0

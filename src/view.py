@@ -1,4 +1,6 @@
+import ctypes # da stdlib do python
 from OpenGL.GL import *
+from OpenGL.GLUT import *
 from src.text_helper import TextHelper
 
 class View:
@@ -7,31 +9,78 @@ class View:
         self.width = width
         self.height = height
 
+    # atualiza as dimensões da tela, caso tenha mudado, pegando do TextHelper
+    def update_dimensions(self):
+        self.width = self.text_helper.window_width
+        self.height = self.text_helper.window_height
+
+    # Calcula a posição X para centralizar o texto na tela
+    def center_x(self, text):
+        font = self.text_helper.active_glut_font
+        if not text or not font:
+            # Se o texto for vazio ou a fonte não estiver definida, retorna o centro (para outros elementos não texto)
+            return int(self.width * 0.5)
+            
+        # coifica para bytes pra não dar erro de codificação ao calcular
+        encoded_text = text.encode('utf-8')
+        
+        # Cria um buffer de string a partir dos bytes codificados
+        c_text = ctypes.create_string_buffer(encoded_text)
+        
+        # Converte o buffer para o tipo esperado pela função glutBitmapLength
+        ptr = ctypes.cast(c_text, ctypes.POINTER(ctypes.c_ubyte))
+        
+        # Obtém a largura do texto em pixels pegando a fonte GLUT ativa
+        text_width = glutBitmapLength(font, ptr)
+        
+        # Calcula a posição X inicial para centralizar o texto
+        return int(self.width * 0.5 - text_width / 2)
+
     def render_title_screen(self):
-        glClearColor(0.1, 0.1, 0.2, 1.0)  # Deixa um pouco mais escuro
+        self.update_dimensions() # Garante que as dimensões estão atualizadas
+        glClearColor(0.1, 0.1, 0.2, 1.0)  # Fundo azul escuro para o título
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         # Define a projeção e a matriz de modelo para renderizar o texto
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        glOrtho(-1, 1, -1, 1, -1, 1)
+        # Usar glOrtho padrão para elementos do jogo, se houver
+        glOrtho(-1, 1, -1, 1, -1, 1) 
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 
-        title_x = int(self.width * 0.5 - 150)
-        title_y = int(self.height * 0.66)
-        
-        instruction_x = int(self.width * 0.5 - 125)
-        instruction_y = int(self.height * 0.5)
-        
-        self.text_helper.render_text("Flappy Bird OpenGL", title_x, title_y, (1.0, 1.0, 0.0))
-        self.text_helper.render_text("Press SPACE to Start", instruction_x, instruction_y, (1.0, 1.0, 1.0))
+        # Desenha um ícone de pássaro amarelo (usando coordenadas normalizadas)
+        # Essas coordenadas são relativas ao centro (0,0)
+        bird_x_center = 0.0
+        bird_y_center = 0.5 # Posiciona o pássaro um pouco acima do centro
+        bird_scale = 0.1    # Tamanho do pássaro
+        glColor3f(1.0, 1.0, 0.0) # Cor amarela
+        glBegin(GL_TRIANGLES)
+        glVertex2f(bird_x_center, bird_y_center + bird_scale) # Topo
+        glVertex2f(bird_x_center - bird_scale * 0.5, bird_y_center - bird_scale * 0.5) # Base esquerda
+        glVertex2f(bird_x_center + bird_scale * 0.5, bird_y_center - bird_scale * 0.5) # Base direita
+        glEnd()
 
-    def render_game_over_screen(self, score):
-        # Se a tela foi redimensionada, atualiza as dimensões
-        self.width = self.text_helper.window_width
-        self.height = self.text_helper.window_height
-    
+        # Define os textos
+        title_text = "Flappy Bird OpenGL"
+        instruction_text = "Press SPACE to Start"
+
+        # Calcula as posições Y
+        title_y = int(self.height * 0.66) # Posição Y do título
+        instruction_y = int(self.height * 0.5) # Posição Y da instrução
+
+        # Calcula as posições X centralizadas
+        title_x = self.center_x(title_text)
+        instruction_x = self.center_x(instruction_text)
+
+        # Renderiza os textos usando TextHelper
+        self.text_helper.render_text(title_text, title_x, title_y, (1.0, 1.0, 0.0))  # Título amarelo
+        self.text_helper.render_text(instruction_text, instruction_x, instruction_y, (1.0, 1.0, 1.0))  # Instrução branca
+
+    def render_game_over_screen(self, score, max_speed):
+        """Renderiza a tela de game over com sobreposição e texto."""
+        self.update_dimensions() # Garante que as dimensões estão atualizadas
+
         # Define a projeção e a matriz de modelo para renderizar o texto
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
@@ -39,38 +88,48 @@ class View:
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 
-        glColor4f(0.0, 0.0, 0.0, 0.5) # Deixa um pouco mais escuro
+        # Desenha uma sobreposição preta semi-transparente para escurecer o fundo
+        glColor4f(0.0, 0.0, 0.0, 0.5)  # Preto com 50% de transparência
         glBegin(GL_QUADS)
         glVertex2f(-1, -1)
         glVertex2f(1, -1)
         glVertex2f(1, 1)
         glVertex2f(-1, 1)
         glEnd()
-        glColor4f(1.0, 1.0, 1.0, 1.0) # Reseta a cor a ser usada
+        glColor4f(1.0, 1.0, 1.0, 1.0)  # Reseta a cor para branco opaco para o texto
 
-        # Calcula posições relativas para o texto
-        game_over_x = int(self.width * 0.5 - 60)
+        # Define os textos
+        game_over_text = "Game Over!"
+        score_text = f"Score: {score}"
+        max_speed_text = f"Max Speed: {max_speed:.1f}"
+        restart_text = "Press R to Restart"
+        quit_text = "Press ESC to Quit"
+
+        # Calcula as posições Y
         game_over_y = int(self.height * 0.7)
-        
-        score_x = int(self.width * 0.5 - 40)
         score_y = int(self.height * 0.6)
-        
-        restart_x = int(self.width * 0.5 - 80)
-        restart_y = int(self.height * 0.5)
-        
-        quit_x = int(self.width * 0.5 - 70)
-        quit_y = int(self.height * 0.4)
+        max_speed_y = int(self.height * 0.5)
+        restart_y = int(self.height * 0.4)
+        quit_y = int(self.height * 0.3)
 
-        # Renderiza o texto de Game Over e as instruções
-        self.text_helper.render_text("Game Over!", game_over_x, game_over_y, (1.0, 0.0, 0.0))
-        self.text_helper.render_text(f"Score: {score}", score_x, score_y, (1.0, 1.0, 1.0))
-        self.text_helper.render_text("Press R to Restart", restart_x, restart_y, (1.0, 1.0, 1.0))
-        self.text_helper.render_text("Press ESC to Quit", quit_x, quit_y, (1.0, 1.0, 1.0))
-    
+        # Calcula as posições X centralizadas para cada texto
+        game_over_x = self.center_x(game_over_text)
+        score_x = self.center_x(score_text)
+        max_speed_x = self.center_x(max_speed_text)
+        restart_x = self.center_x(restart_text)
+        quit_x = self.center_x(quit_text)
+
+        # Renderiza os textos usando TextHelper
+        self.text_helper.render_text(game_over_text, game_over_x, game_over_y, (1.0, 0.0, 0.0)) # Vermelho
+        self.text_helper.render_text(score_text, score_x, score_y, (1.0, 1.0, 1.0)) # Branco
+        self.text_helper.render_text(max_speed_text, max_speed_x, max_speed_y, (1.0, 1.0, 1.0)) # Branco
+        self.text_helper.render_text(restart_text, restart_x, restart_y, (1.0, 1.0, 1.0)) # Branco
+        self.text_helper.render_text(quit_text, quit_x, quit_y, (1.0, 1.0, 1.0)) # Branco
+
     def render_continue_screen(self, lives):
-        self.width = self.text_helper.window_width
-        self.height = self.text_helper.window_height
-        
+        """Renderiza a tela de pausa para continuar após perder uma vida."""
+        self.update_dimensions() # Garante que as dimensões estão atualizadas
+
         # Define a projeção e a matriz de modelo para renderizar o texto
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
@@ -78,22 +137,28 @@ class View:
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 
-        # Desenha um fundo semi-transparente
-        glColor4f(1.0, 1.0, 0.0, 0.2)
+        # Desenha uma sobreposição amarela semi-transparente para indicar estado temporário
+        glColor4f(1.0, 1.0, 0.0, 0.2)  # Amarelo com 20% de transparência
         glBegin(GL_QUADS)
         glVertex2f(-1, -1)
         glVertex2f(1, -1)
         glVertex2f(1, 1)
         glVertex2f(-1, 1)
         glEnd()
-        glColor4f(1.0, 1.0, 1.0, 1.0)
+        glColor4f(1.0, 1.0, 1.0, 1.0)  # Reseta a cor para branco opaco para o texto
 
-        
-        lives_x = int(self.width * 0.5 - 60)
-        lives_y = int(self.height * 0.5)
-        
-        options_x = int(self.width * 0.5 - 130)
-        options_y = int(self.height * 0.4)
+        # Define os textos
+        lives_text = f"Lives remaining: {lives}"
+        options_text = "Press SPACE to continue or ESC to quit"
 
-        self.text_helper.render_text(f"Lives remaining: {lives}", lives_x, lives_y, (1.0, 1.0, 1.0))
-        self.text_helper.render_text("Press SPACE to continue or ESC to quit", options_x, options_y, (1.0, 1.0, 1.0))
+        # Calcula as posições Y
+        lives_y = int(self.height * 0.55) # Um pouco acima do centro
+        options_y = int(self.height * 0.45) # Um pouco abaixo do centro
+
+        # Calcula as posições X centralizadas
+        lives_x = self.center_x(lives_text)
+        options_x = self.center_x(options_text)
+
+        # Renderiza os textos usando TextHelper
+        self.text_helper.render_text(lives_text, lives_x, lives_y, (1.0, 1.0, 1.0)) # Branco
+        self.text_helper.render_text(options_text, options_x, options_y, (1.0, 1.0, 1.0)) # Branco

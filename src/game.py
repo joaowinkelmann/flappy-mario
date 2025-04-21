@@ -81,6 +81,8 @@ class Game:
         )
         # referncia o gerenciador de canos no gerenciador de coletáveis para fazer check de colisão
         self.collectible_manager.set_obstacle_manager(self.obstacle_manager)
+        # passando o player pra atualizar as chances de spawn de item
+        self.collectible_manager.set_player(self.player)
         
         self.ui = UI(game_font, self.width, self.height)
         self.view = View(game_font, self.width, self.height)
@@ -179,8 +181,8 @@ class Game:
             if self.obstacle_manager.check_passed(self.player):
                 self.score += 1
 
-            # Se bateu no canto da tela, perde uma vida
-            if self.player.y <= -1.0 + self.player.height / 2:
+            # Verifica se não bateu nas bordas
+            if self.player.y <= -1.0 + self.player.height/2:
                 self.handle_death()
 
 
@@ -275,7 +277,7 @@ class Game:
                   self.ui.render(self.score, self.lives, self.player)
              elif self.state == GAME_OVER:
                   # Puxa a tela de game over
-                  self.view.render_game_over_screen(self.score)
+                  self.view.render_game_over_screen(self.score, self.player.max_speed_obtained)
              elif self.state == CONTINUE_SCREEN:
                   # Puxa a tela de continue
                   self.view.render_continue_screen(self.lives)
