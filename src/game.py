@@ -15,6 +15,7 @@ PLAYING = 1
 GAME_OVER = 2
 DIFF_SELECT = 3
 CONTINUE_SCREEN = 4
+PAUSED = 5
 
 class Game:
     def __init__(self, window, game_font, gravity=-9.8, flap_force=5.0, terminal_velocity=-10.0,
@@ -105,6 +106,18 @@ class Game:
                     self.game_over()
                 else:
                     self.running = False # sai do jogo
+            
+            if key == glfw.KEY_P:
+                if self.state == PLAYING:
+                    self.state = PAUSED
+                elif self.state == PAUSED:
+                    self.state = PLAYING
+                    self.last_time = time.time()
+        
+            elif self.state == PAUSED:
+                if key == glfw.KEY_SPACE:
+                    self.state = PLAYING
+                    self.last_time = time.time()
 
             if self.state == TITLE:
                 if key == glfw.KEY_SPACE:
@@ -306,6 +319,10 @@ class Game:
                   self.view.render_continue_screen(self.lives)
              elif self.state == DIFF_SELECT:
                   self.view.render_difficulty_screen(self.lives)
+             elif self.state == PAUSED:
+                    # Puxa a tela de pause
+                    self.ui.render(self.config, self.score, self.lives, self.player, coins=self.collectible_manager.coins_collected)
+                    self.view.render_pause_screen()
 
         # Trocar buffers
         glfw.swap_buffers(self.window)

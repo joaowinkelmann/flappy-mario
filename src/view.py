@@ -220,3 +220,39 @@ class View:
         self.text_helper.render_text(option1_text, option1_x, option1_y, (1.0, 1.0, 1.0))
         self.text_helper.render_text(option2_text, option2_x, option2_y, (1.0, 1.0, 1.0))
         self.text_helper.render_text(option3_text, option3_x, option3_y, (1.0, 1.0, 1.0))
+
+    def render_pause_screen(self):
+        """Renderiza a tela de pausa."""
+        self.update_dimensions()   # Atualiza as dimensões da tela
+        
+        # Configura a projeção ortográfica para renderização 2D
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        glOrtho(-1, 1, -1, 1, -1, 1)
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
+        
+        # Desenha uma sobreposição azul clara semi-transparente
+        glColor4f(0.0, 0.0, 0.5, 0.3)  # Azul com 20% de transparência
+        glBegin(GL_QUADS)
+        glVertex2f(-1, -1)
+        glVertex2f(1, -1)
+        glVertex2f(1, 1)
+        glVertex2f(-1, 1)
+        glEnd()
+        
+        # Textos a serem exibidos
+        pause_text = "PAUSED"
+        continue_text = "Press P or SPACE to continue"
+        
+        # Posições Y (espalhadas verticalmente)
+        pause_y = int(self.height * 0.6)
+        continue_y = int(self.height * 0.4)
+        
+        # Posições X centralizadas
+        pause_x = self.center_x(pause_text)
+        continue_x = self.center_x(continue_text)
+        
+        # Renderiza os textos
+        self.text_helper.render_text(pause_text, pause_x, pause_y, (1.0, 1.0, 1.0))
+        self.text_helper.render_text(continue_text, continue_x, continue_y, (1.0, 1.0, 1.0))
