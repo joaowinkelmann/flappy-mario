@@ -20,7 +20,7 @@ class Game:
     def __init__(self, window, game_font, gravity=-9.8, flap_force=5.0, terminal_velocity=-10.0,
                 obstacle_speed=0.5, obstacle_spawn_interval=2.0, obstacle_gap_size=0.3, obstacle_width=0.1,
                 collectible_spawn_interval=5.0, collectible_speed=0.5, initial_lives=3, player_size=0.05,
-                player_x_pos=0.3, player_start_y=0.5):
+                player_x_pos=0.3, player_start_y=0.5, difficulty = "Normal"):
         
         self.debug = False
         self.window = window
@@ -50,7 +50,8 @@ class Game:
             'player_size': player_size,
             'player_x_pos': player_x_pos,
             'player_start_y': player_start_y,
-            'initial_lives': initial_lives
+            'initial_lives': initial_lives,
+            'difficulty': difficulty
         }
 
         # Inicializar componentes do jogo
@@ -126,14 +127,17 @@ class Game:
                 if key == glfw.KEY_1:
                     self.config["obstacle_speed"] = 0.8
                     self.config["collectible_speed"] =0.8
+                    self.config["difficulty"] = "Easy"
                     self.restart_game()
                 elif key == glfw.KEY_2:
                     self.config["obstacle_speed"] = 0.5
                     self.config["collectible_speed"] =0.5
+                    self.config["difficulty"] = "Normal"
                     self.restart_game()
                 elif key == glfw.KEY_3:
                     self.config["obstacle_speed"] = 0.3
                     self.config["collectible_speed"] = 0.3
+                    self.config["difficulty"] = "Hard"
                     self.restart_game()
 
     # inicia o jogo
@@ -264,7 +268,7 @@ class Game:
     # Renderiza os elementos do jogo, baseando-se nos estados
     def render(self):
         if self.state == TITLE:
-             self.view.render_title_screen()
+             self.view.render_title_screen(self.config)
         else:
              # Limpa a tela e reinicia a cor de fundo
              glClearColor(0.5, 0.7, 1.0, 1.0)
@@ -296,7 +300,7 @@ class Game:
                   self.ui.render(self.score, self.lives, self.player, coins=self.collectible_manager.coins_collected)
              elif self.state == GAME_OVER:
                   # Puxa a tela de game over
-                  self.view.render_game_over_screen(self.score, self.player.max_speed_obtained, coins=self.collectible_manager.coins_collected)
+                  self.view.render_game_over_screen(self.config, self.score, self.player.max_speed_obtained, coins=self.collectible_manager.coins_collected)
              elif self.state == CONTINUE_SCREEN:
                   # Puxa a tela de continue
                   self.view.render_continue_screen(self.lives)

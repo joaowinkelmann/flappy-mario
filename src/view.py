@@ -36,7 +36,7 @@ class View:
         # Calcula a posição X inicial para centralizar o texto
         return int(self.width * 0.5 - text_width / 2)
 
-    def render_title_screen(self):
+    def render_title_screen(self, config = None):
         self.update_dimensions() # Garante que as dimensões estão atualizadas
         glClearColor(0.1, 0.1, 0.2, 1.0)  # Fundo azul escuro para o título
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -64,7 +64,7 @@ class View:
         # Define os textos
         title_text = "Flappy Mario OpenGL"
         instruction_text = "Press SPACE to Start"
-        difficulty_text = "Press C to change difficulty"
+        difficulty_text = f"Press C to change difficulty. Current {config['difficulty']}"
 
         # Calcula as posições Y
         title_y = int(self.height * 0.66) # Posição Y do título
@@ -81,7 +81,7 @@ class View:
         self.text_helper.render_text(instruction_text, instruction_x, instruction_y, (1.0, 1.0, 1.0))  # Instrução branca
         self.text_helper.render_text(difficulty_text, difficulty_x, difficulty_y, (1.0, 1.0, 1.0))  # Dificuldade branca
 
-    def render_game_over_screen(self, score, max_speed, coins):
+    def render_game_over_screen(self, config, score, max_speed, coins):
         """Renderiza a tela de game over com sobreposição e texto."""
         self.update_dimensions() # Garante que as dimensões estão atualizadas
 
@@ -109,7 +109,7 @@ class View:
         max_speed_text = f"Max Speed: {max_speed:.1f}"
         restart_text = "Press R to Restart"
         quit_text = "Press ESC to Quit"
-        difficulty_text = "Press C to change difficulty"
+        difficulty_text = f"Press C to change difficulty. Current {config['difficulty']}"
 
         # Calcula as posições Y
         game_over_y = int(self.height * 0.7)

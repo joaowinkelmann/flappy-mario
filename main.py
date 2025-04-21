@@ -17,6 +17,7 @@ FLAP_FORCE = 3.0
 TERMINAL_VELOCITY = -10.0 # cap de velocidade de quedad
 
 # Configs do jogo
+DIFFICULTY = "Normal"
 OBSTACLE_SPEED = 0.5
 OBSTACLE_SPAWN_INTERVAL = 2.0
 OBSTACLE_GAP_SIZE = 0.6 # Tamanho do espaço vertical entre os canos
@@ -69,6 +70,7 @@ def main():
                 player_size=PLAYER_SIZE,
                 player_x_pos=PLAYER_X_POS,
                 player_start_y=PLAYER_START_Y,
+                difficulty=DIFFICULTY
                 )
 
     # Loop principal
