@@ -140,16 +140,22 @@ class Game:
                 if key == glfw.KEY_1:
                     self.config["obstacle_speed"] = 0.8
                     self.config["collectible_speed"] =0.8
+                    self.config["collectible_spawn_interval"] = 2.0
+                    self.config["obstacle_gap_size"] = 0.8
                     self.config["difficulty"] = "Easy"
                     self.restart_game()
                 elif key == glfw.KEY_2:
                     self.config["obstacle_speed"] = 0.5
                     self.config["collectible_speed"] =0.5
+                    self.config["collectible_spawn_interval"] = 2.0
+                    self.config["obstacle_gap_size"] = 0.6
                     self.config["difficulty"] = "Normal"
                     self.restart_game()
                 elif key == glfw.KEY_3:
-                    self.config["obstacle_speed"] = 0.3
-                    self.config["collectible_speed"] = 0.3
+                    self.config["obstacle_speed"] = 0.4
+                    self.config["collectible_speed"] = 0.4
+                    self.config["collectible_spawn_interval"] = 4.0
+                    self.config["obstacle_gap_size"] = 0.4
                     self.config["difficulty"] = "Hard"
                     self.restart_game()
 
