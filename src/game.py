@@ -30,6 +30,7 @@ class Game:
         # Configurar callbacks de entrada
         glfw.set_key_callback(window, self.key_callback)
 
+        # Configurar callback de redimensionamento da janela
         glfw.set_framebuffer_size_callback(window, self.framebuffer_size_callback)
 
         # Insatnciando o estado do jogo inicial
@@ -263,7 +264,7 @@ class Game:
             # seta com timer pra voltar a ser tangível
             self.player.activate_intangibility(5.0)
         elif item_type == "coin":
-            self.score += 1  # Opcional: aumenta o score ao pegar moeda
+            self.score += 1
 
 
     def reset_player_position(self):

@@ -13,13 +13,13 @@ WINDOW_TITLE = "Flappy Mario Bird"
 
 # Configurações de física
 GRAVITY = -9.8
-FLAP_FORCE = 3.0
-TERMINAL_VELOCITY = -10.0 # cap de velocidade de quedad
+FLAP_FORCE = 3.0 # Tamanho do pulo
+TERMINAL_VELOCITY = -10.0 # cap de velocidade de queda
 
 # Configs do jogo
 DIFFICULTY = "Normal"
-OBSTACLE_SPEED = 0.5
-OBSTACLE_SPAWN_INTERVAL = 2.0
+OBSTACLE_SPEED = 0.5 # Velocidade de movimento dos canos
+OBSTACLE_SPAWN_INTERVAL = 2.0 # Tempo entre cada cano que aparece
 OBSTACLE_GAP_SIZE = 0.6 # Tamanho do espaço vertical entre os canos
 OBSTACLE_WIDTH = 0.1  # Largura dos canos
 COLLECTIBLE_SPAWN_INTERVAL = 2.0  # Tempo entre cada tentativa de spawn de coletável
@@ -31,7 +31,7 @@ PLAYER_SIZE = 0.05  # Para calcular os "bounds"/limites do jogador
 PLAYER_X_POS = 0  # Posição horizontal do jogador (constante)
 PLAYER_START_Y = 0.5  # Altura do início do jogador
 
-# COnfigurações visuais
+# Configurações visuais
 BACKGROUND_COLOR = (0.5, 0.7, 1.0, 1.0)
 TITLE_BACKGROUND_COLOR = (0.1, 0.1, 0.2, 1.0) 
 BIRD_COLOR = (1.0, 1.0, 0.0)

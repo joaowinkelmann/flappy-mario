@@ -49,18 +49,6 @@ class View:
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 
-        # Desenha um ícone de pássaro amarelo (usando coordenadas normalizadas)
-        # Essas coordenadas são relativas ao centro (0,0)
-        bird_x_center = 0.0
-        bird_y_center = 0.5 # Posiciona o pássaro um pouco acima do centro
-        bird_scale = 0.1    # Tamanho do pássaro
-        glColor3f(1.0, 1.0, 0.0) # Cor amarela
-        glBegin(GL_TRIANGLES)
-        glVertex2f(bird_x_center, bird_y_center + bird_scale) # Topo
-        glVertex2f(bird_x_center - bird_scale * 0.5, bird_y_center - bird_scale * 0.5) # Base esquerda
-        glVertex2f(bird_x_center + bird_scale * 0.5, bird_y_center - bird_scale * 0.5) # Base direita
-        glEnd()
-
         # Define os textos
         title_text = "Flappy Mario OpenGL"
         instruction_text = "Press SPACE to Start"
@@ -82,7 +70,6 @@ class View:
         self.text_helper.render_text(difficulty_text, difficulty_x, difficulty_y, (1.0, 1.0, 1.0))  # Dificuldade branca
 
     def render_game_over_screen(self, config, score, max_speed, coins):
-        """Renderiza a tela de game over com sobreposição e texto."""
         self.update_dimensions() # Garante que as dimensões estão atualizadas
 
         # Define a projeção e a matriz de modelo para renderizar o texto
@@ -139,7 +126,6 @@ class View:
         self.text_helper.render_text(difficulty_text, difficulty_x, difficulty_y, (1.0, 1.0, 1.0)) # Branco
 
     def render_continue_screen(self, lives):
-        """Renderiza a tela de pausa para continuar após perder uma vida."""
         self.update_dimensions() # Garante que as dimensões estão atualizadas
 
         # Define a projeção e a matriz de modelo para renderizar o texto
@@ -176,8 +162,7 @@ class View:
         self.text_helper.render_text(options_text, options_x, options_y, (1.0, 1.0, 1.0)) # Branco
 
     def render_difficulty_screen(self, lives):
-        """Renderiza a tela de seleção de dificuldade."""
-
+        
         self.update_dimensions()  # Atualiza as dimensões da tela
 
         # Configura a projeção ortográfica para renderização 2D
@@ -222,7 +207,6 @@ class View:
         self.text_helper.render_text(option3_text, option3_x, option3_y, (1.0, 1.0, 1.0))
 
     def render_pause_screen(self):
-        """Renderiza a tela de pausa."""
         self.update_dimensions()   # Atualiza as dimensões da tela
         
         # Configura a projeção ortográfica para renderização 2D
